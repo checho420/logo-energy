@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-charcoal: #0B0D0E;
+    --brand-cream: #F5F7F6;
+    --brand-red: #D31A20;
+    --brand-maroon: #AC192C;
+    --brand-green: #3E7136;
+    --brand-forest: #17492E;
+  }
+
+  body {
+    @apply font-sans bg-brand-cream text-brand-charcoal transition-colors duration-1000 overflow-x-hidden antialiased;
+    font-family: 'Inter', sans-serif;
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  html.dark body {
+    @apply bg-brand-charcoal text-brand-cream;
+  }
+
+  /* Modernized scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brand-green/20 rounded-full hover:bg-brand-green/40 transition-all;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Outfit', sans-serif;
+    @apply font-bold tracking-tight;
+    text-wrap: balance;
+    /* Previene cortes de palabras feos en títulos */
+  }
+
+  .font-logo {
+    font-family: 'Outfit', sans-serif;
+    @apply font-black tracking-tighter uppercase;
+  }
+
+  /* Selection style */
+  ::selection {
+    @apply bg-brand-green text-brand-cream;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-xl bg-white/40 dark:bg-black/40 border border-white/20 dark:border-white/5;
+  }
+
+  .glass-premium {
+    @apply backdrop-blur-3xl bg-white/50 dark:bg-brand-charcoal/60 border border-white/30 dark:border-white/10 shadow-2xl;
+  }
+
+  .text-reveal {
+    background: linear-gradient(to right, currentColor 100%, transparent 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-repeat: no-repeat;
+    animation: reveal 1s ease-out forwards;
+  }
+
+  .text-glow-green {
+    text-shadow: 0 0 25px rgba(62, 113, 84, 0.4);
+  }
+
+  @keyframes reveal {
+    0% {
+      background-size: 0% 100%;
+      color: transparent;
+    }
+
+    100% {
+      background-size: 100% 100%;
+    }
+  }
+}
+
+@layer components {
+  .btn-premium {
+    @apply relative overflow-hidden px-10 py-5 bg-brand-charcoal dark:bg-brand-cream text-brand-cream dark:text-brand-charcoal rounded-full font-black uppercase text-[10px] tracking-[0.3em] transition-all duration-700 hover:bg-brand-green dark:hover:bg-brand-green dark:hover:text-brand-cream hover:shadow-[0_20px_40px_-10px_#3E713666] active:scale-95 border-none outline-none;
+  }
+
+  .card-minimalist {
+    @apply bg-white dark:bg-brand-charcoal/50 border border-brand-charcoal/[0.03] dark:border-white/[0.03] rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-2xl dark:hover:shadow-black/40;
+  }
+}

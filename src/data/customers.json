@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "name": "Juan Pérez",
+        "email": "juan.perez@example.com",
+        "phone": "+52 55 1234 5678",
+        "totalSpent": 1500.50,
+        "lastPurchaseDate": "2026-02-10",
+        "purchaseCount": 3,
+        "status": "active"
+    },
+    {
+        "id": 2,
+        "name": "María García",
+        "email": "maria.garcia@example.com",
+        "phone": "+52 81 9876 5432",
+        "totalSpent": 3200.00,
+        "lastPurchaseDate": "2026-02-08",
+        "purchaseCount": 5,
+        "status": "pro"
+    },
+    {
+        "id": 3,
+        "name": "Carlos López",
+        "email": "carlos.lopez@example.com",
+        "phone": "+52 33 5555 4444",
+        "totalSpent": 450.00,
+        "lastPurchaseDate": "2026-01-25",
+        "purchaseCount": 1,
+        "status": "new"
+    },
+    {
+        "id": 4,
+        "name": "Ana Martínez",
+        "email": "ana.martinez@example.com",
+        "phone": "+52 55 6666 7777",
+        "totalSpent": 8500.00,
+        "lastPurchaseDate": "2026-02-09",
+        "purchaseCount": 12,
+        "status": "vip"
+    },
+    {
+        "id": 5,
+        "name": "Roberto Sánchez",
+        "email": "roberto.sanchez@example.com",
+        "phone": "+52 81 2222 3333",
+        "totalSpent": 120.00,
+        "lastPurchaseDate": "2025-12-15",
+        "purchaseCount": 1,
+        "status": "inactive"
+    }
+]

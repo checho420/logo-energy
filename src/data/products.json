@@ -1,0 +1,92 @@
+[
+    {
+        "id": 1,
+        "name": "Luminaria pública solar 300W",
+        "brand": "SunPower",
+        "category": "Luminarias",
+        "price": 1199900,
+        "stock": 50,
+        "description": "",
+        "images": [
+            "assets/products/luminaria.png"
+        ],
+        "promotion": true,
+        "discountPercentage": 15,
+        "new": true,
+        "bestSeller": true,
+        "sold": 50,
+        "disabled": false
+    },
+    {
+        "id": 2,
+        "name": "Ventilador solar",
+        "brand": "VoltMaster",
+        "category": "Ventiladores",
+        "price": 3399900,
+        "stock": 30,
+        "description": "Checho",
+        "images": [
+            "assets/products/ventilador.png"
+        ],
+        "promotion": false,
+        "discountPercentage": 0,
+        "new": false,
+        "bestSeller": true,
+        "sold": 154,
+        "disabled": false
+    },
+    {
+        "id": 3,
+        "name": "Generador Solar Portátil 1000Wh",
+        "brand": "EcoFlow",
+        "category": "Generadores",
+        "price": 4199900,
+        "stock": 25,
+        "description": "Checho",
+        "images": [
+            "assets/products/generador.png"
+        ],
+        "promotion": true,
+        "discountPercentage": 15,
+        "new": true,
+        "bestSeller": false,
+        "sold": 8,
+        "disabled": false
+    },
+    {
+        "id": 4,
+        "name": "Batería de Gel de Ciclo Profundo 200Ah",
+        "brand": "PowerCell",
+        "category": "Baterías",
+        "price": 1280000,
+        "stock": 100,
+        "description": "",
+        "images": [
+            "assets/products/bateria.png"
+        ],
+        "promotion": true,
+        "discountPercentage": 10,
+        "new": false,
+        "bestSeller": false,
+        "sold": 14,
+        "disabled": false
+    },
+    {
+        "id": 5,
+        "name": "Pack de Luces Solares para Jardín",
+        "brand": "LumiSolar",
+        "category": "Iluminación",
+        "price": 185000,
+        "stock": 200,
+        "description": "Juego",
+        "images": [
+            "assets/products/luces.png"
+        ],
+        "promotion": true,
+        "discountPercentage": 15,
+        "new": true,
+        "bestSeller": true,
+        "sold": 175,
+        "disabled": false
+    }
+]
