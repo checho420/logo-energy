@@ -154,47 +154,60 @@ const Hero = () => {
                 </div>
             </div>
 
-            {/* Sidebar Controls */}
-            <div className="absolute right-10 bottom-24 z-20 hidden md:flex flex-col items-center gap-12">
-                <div className="flex flex-col gap-4 text-brand-cream/30 font-bold text-sm">
-                    {images.map((_, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => {
-                                setDirection(idx > currentIndex ? 1 : -1);
-                                setCurrentIndex(idx);
-                            }}
-                            className={`transition-all duration-500 hover:text-brand-green ${idx === currentIndex ? 'text-brand-green' : ''}`}
-                        >
-                            {(idx + 1).toString().padStart(2, '0')}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="flex flex-col gap-4">
-                    <button onClick={prevSlide} className="w-12 h-12 rounded-full border border-brand-cream/10 flex items-center justify-center text-brand-cream/40 hover:bg-brand-green hover:text-brand-cream hover:border-brand-green transition-all group">
-                        <FontAwesomeIcon icon={faChevronLeft} className="text-xs" />
+            {/* Central Navigation Controls */}
+            <div className="absolute bottom-24 md:bottom-32 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4 md:gap-8 w-full max-w-xl px-4 md:px-6">
+                <div className="flex items-center justify-between w-full mb-2">
+                    <button 
+                        onClick={prevSlide} 
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-brand-cream/10 flex items-center justify-center text-brand-cream/40 hover:bg-brand-green hover:text-brand-cream hover:border-brand-green transition-all"
+                    >
+                        <FontAwesomeIcon icon={faChevronLeft} className="text-[10px]" />
                     </button>
-                    <button onClick={nextSlide} className="w-12 h-12 rounded-full border border-brand-cream/10 flex items-center justify-center text-brand-cream/40 hover:bg-brand-green hover:text-brand-cream hover:border-brand-green transition-all">
-                        <FontAwesomeIcon icon={faChevronRight} className="text-xs" />
+
+                    <div className="flex items-center gap-2 md:gap-4 flex-1 px-4 md:px-10">
+                        {images.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => {
+                                    setDirection(idx > currentIndex ? 1 : -1);
+                                    setCurrentIndex(idx);
+                                }}
+                                className="flex-1 group py-4"
+                            >
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex justify-between items-end">
+                                        <span className={`text-[9px] md:text-[10px] font-black transition-colors duration-500 ${idx === currentIndex ? 'text-brand-green' : 'text-brand-cream/20'}`}>
+                                            {(idx + 1).toString().padStart(2, '0')}
+                                        </span>
+                                    </div>
+                                    <div className="relative h-[2px] w-full bg-brand-cream/10 overflow-hidden">
+                                        {idx === currentIndex && (
+                                            <motion.div
+                                                initial={{ scaleX: 0 }}
+                                                animate={{ scaleX: 1 }}
+                                                transition={{ duration: 8, ease: "linear" }}
+                                                className="absolute inset-0 bg-brand-green origin-left"
+                                            />
+                                        )}
+                                        {idx < currentIndex && (
+                                            <div className="absolute inset-0 bg-brand-green/40" />
+                                        )}
+                                    </div>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+
+                    <button 
+                        onClick={nextSlide} 
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-brand-cream/10 flex items-center justify-center text-brand-cream/40 hover:bg-brand-green hover:text-brand-cream hover:border-brand-green transition-all"
+                    >
+                        <FontAwesomeIcon icon={faChevronRight} className="text-[10px]" />
                     </button>
                 </div>
             </div>
 
-            {/* Bottom Info Bar */}
-            <div className="absolute bottom-10 left-10 z-20 hidden md:block w-fit">
-                <div className="flex items-center gap-10">
-                    <div className="flex flex-col gap-1">
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-brand-green/60">Fundada en</span>
-                        <span className="text-sm font-bold text-brand-cream/80 tracking-tighter">Medellín, Antioquia</span>
-                    </div>
-                    <div className="w-[1px] h-8 bg-brand-cream/10" />
-                    <div className="flex flex-col gap-1">
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-brand-green/60">Certificación</span>
-                        <span className="text-sm font-bold text-brand-cream/80 tracking-tighter">Gold Standard Impact</span>
-                    </div>
-                </div>
-            </div>
+
 
             {/* Background Typography Overlay */}
             <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 rotate-90 z-0 pointer-events-none opacity-[0.02] select-none text-[20vw] font-black text-brand-cream whitespace-nowrap">

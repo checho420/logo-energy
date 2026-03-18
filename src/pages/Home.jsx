@@ -5,7 +5,7 @@ import { useProducts } from '../context/ProductContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
@@ -53,37 +53,76 @@ const Home = () => {
             .filter(Boolean);
     }, [promoIds, products]);
 
+    // Slider state for dynamic promo banners
+    const [bannerIndex, setBannerIndex] = useState(0);
+    const promoBanners = useMemo(() => [
+        {
+            mobile: 'assets/banners/banner-sabias-mobile.jpg',
+            desktop: 'assets/banners/banner-sabias-desktop.jpg',
+            alt: 'Promo Sabías Que?'
+        },
+        {
+            mobile: 'assets/banners/banner-logo-mobile.jpg',
+            desktop: 'assets/banners/banner-logo-desktop.jpg',
+            alt: 'Promo Logo Energy'
+        },
+        {
+            mobile: 'assets/banners/banner-luminaria-mobile.jpg',
+            desktop: 'assets/banners/banner-luminaria-desktop.jpg',
+            alt: 'Promo Luminaria'
+        }
+    ], []);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setBannerIndex((prev) => (prev + 1) % promoBanners.length);
+        }, 6000);
+        return () => clearInterval(timer);
+    }, [promoBanners.length]);
+
     return (
         <div className="bg-brand-cream dark:bg-brand-charcoal overflow-x-hidden transition-colors duration-1000">
             <Hero />
 
-            {/* Intro Stats Section */}
-            <section className="py-24 border-b border-brand-charcoal/[0.03] dark:border-white/[0.03]">
-                <div className="container mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
-                        <div className="flex flex-col gap-4">
-                            <span className="text-brand-green font-bold text-5xl">98%</span>
-                            <h4 className="text-sm font-bold uppercase tracking-widest opacity-40">Satisfacción Elite</h4>
-                            <p className="text-sm leading-relaxed opacity-60">Nuestros clientes experimentan una transición energética impecable y sofisticada.</p>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            <span className="text-brand-green font-bold text-5xl">25+</span>
-                            <h4 className="text-sm font-bold uppercase tracking-widest opacity-40">Proyectos Globales</h4>
-                            <p className="text-sm leading-relaxed opacity-60">Liderando la industria con infraestructuras de alto rendimiento en toda la región.</p>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            <span className="text-brand-green font-bold text-5xl">0.0</span>
-                            <h4 className="text-sm font-bold uppercase tracking-widest opacity-40">Huella de Carbono</h4>
-                            <p className="text-sm leading-relaxed opacity-60">Compromiso absoluto con la neutralidad climática en cada eslabón de nuestra cadena.</p>
-                        </div>
+            {/* Dynamic Promo Banner Slider - Aligned with Content Margins */}
+            <div className="container mx-auto px-6 my-8 md:my-12">
+                <section className="w-full bg-brand-cream dark:bg-brand-charcoal overflow-hidden relative border border-brand-charcoal/5 dark:border-white/5 aspect-[4/5] sm:aspect-video md:aspect-[21/9] min-h-[350px] md:min-h-[450px] rounded-[2rem] transition-colors duration-700 shadow-sm">
+                    <AnimatePresence initial={false}>
+                        <motion.div
+                            key={bannerIndex}
+                            initial={{ opacity: 0, scale: 1.02 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                            className="absolute inset-0 w-full h-full flex items-center justify-center"
+                        >
+                            <picture className="w-full h-full">
+                                <source media="(max-width: 768px)" srcSet={promoBanners[bannerIndex].mobile} />
+                                <img
+                                    src={promoBanners[bannerIndex].desktop}
+                                    alt={promoBanners[bannerIndex].alt}
+                                    className="w-full h-full object-contain transition-all duration-700"
+                                />
+                            </picture>
+                        </motion.div>
+                    </AnimatePresence>
+                    
+                    {/* Navigation Dots - Dynamic Contrast */}
+                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                        {promoBanners.map((_, idx) => (
+                            <div 
+                                key={idx}
+                                className={`h-[3px] transition-all duration-700 rounded-full ${idx === bannerIndex ? 'w-10 bg-brand-green' : 'w-2 bg-white/20 dark:bg-white/10'}`}
+                            />
+                        ))}
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
 
             {/* Promociones Section */}
-            <section className="relative py-32 overflow-hidden bg-brand-charcoal/[0.02] dark:bg-white/[0.01]">
+            <section className="relative py-16 md:py-24 overflow-hidden bg-brand-charcoal/[0.02] dark:bg-white/[0.01]">
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-12 relative z-10">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-12 relative z-10">
                         <div className="max-w-2xl">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -133,12 +172,12 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="relative py-32 overflow-hidden">
+            <section className="relative py-16 md:py-24 overflow-hidden">
                 <div className="container mx-auto px-6 relative z-10">
                     {/* Decorative background element for the section */}
                     <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-brand-green/5 rounded-full blur-[120px] pointer-events-none" />
 
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-12 relative z-10">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-12 relative z-10">
                         <div className="max-w-2xl">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -191,7 +230,7 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="py-32 bg-brand-charcoal overflow-hidden">
+            <section className="py-20 md:py-32 bg-brand-charcoal overflow-hidden">
                 <div className="container mx-auto px-6 text-center h-full">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -208,18 +247,6 @@ const Home = () => {
                         </button>
                     </motion.div>
                 </div>
-            </section>
-
-            {/* Dynamic Promo Banner */}
-            <section className="w-full bg-brand-charcoal overflow-hidden">
-                <picture className="w-full">
-                    <source media="(max-width: 768px)" srcSet="assets/banners/banner-mobile.jpg" />
-                    <img
-                        src="assets/banners/banner-desktop.jpg"
-                        alt="Promo Luminaria"
-                        className="w-full h-auto object-cover"
-                    />
-                </picture>
             </section>
 
             {/* WhatsApp Floating */}
