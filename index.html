@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" id="favicon" type="image/png" href="favicon.png" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LOGO Energy</title>
+
+  <script>
+    // Favicon Animation - Wind Turbine Rotation (Max Presence)
+    (function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = document.getElementById('favicon').href;
+
+      let angle = 0;
+      const favicon = document.getElementById('favicon');
+
+      function animate() {
+        if (!img.complete) return requestAnimationFrame(animate);
+
+        ctx.clearRect(0, 0, 64, 64);
+        ctx.save();
+        ctx.translate(32, 32);
+        ctx.rotate(angle * Math.PI / 180);
+
+        // Scale up to remove whitespace padding and match Pinterest icon size
+        const scale = 1.45;
+        const size = 64 * scale;
+        ctx.drawImage(img, -size / 2, -size / 2, size, size);
+        ctx.restore();
+
+        favicon.href = canvas.toDataURL('image/png');
+        angle = (angle + 1.2) % 360;
+
+        setTimeout(() => requestAnimationFrame(animate), 80);
+      }
+
+      img.onload = () => animate();
+    })();
+  </script>
+  <script type="module" crossorigin src="/logo-energy/assets/index-nCJpslzN.js"></script>
+  <link rel="stylesheet" crossorigin href="/logo-energy/assets/index-DUuSKn1S.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>
