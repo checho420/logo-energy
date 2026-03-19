@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useProducts } from '../context/ProductContext';
 import ProductCard from '../components/ProductCard';
-import Skeleton from '../components/Skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -9,43 +8,25 @@ import {
     faFilter,
     faChevronDown,
     faTimes,
-    faChartBar,
     faStar as faStarSolid
 } from '@fortawesome/free-solid-svg-icons';
-import { formatCurrency } from '../utils/formatters';
 
 const Catalog = () => {
     const { products, loading } = useProducts();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Todos');
     const [selectedBrand, setSelectedBrand] = useState('Todas');
-    const [selectedRating, setSelectedRating] = useState(null);
     const [priceRange, setPriceRange] = useState({ min: 0, max: '' });
     const [sortBy, setSortBy] = useState('Popularidad');
     const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
-    const [collapsedSections, setCollapsedSections] = useState({
-        brand: false,
-        category: false,
-        rating: false,
-        price: false
-    });
-
-    const toggleSection = (section) => {
-        setCollapsedSections(prev => ({
-            ...prev,
-            [section]: !prev[section]
-        }));
-    };
 
     // Categories and brands for filters
     const categories = useMemo(() => ['Todos', ...new Set(products.map(p => p.category))], [products]);
     const brands = useMemo(() => ['Todas', ...new Set(products.map(p => p.brand))], [products]);
 
     const filteredProducts = useMemo(() => {
-        // Start with only active products
         let result = products.filter(p => !p.disabled);
 
-        // Defensive Search
         if (searchTerm.trim()) {
             const query = searchTerm.toLowerCase().trim();
             result = result.filter(p =>
@@ -54,17 +35,14 @@ const Catalog = () => {
             );
         }
 
-        // Defensive Category
         if (selectedCategory !== 'Todos') {
             result = result.filter(p => p.category === selectedCategory);
         }
 
-        // Defensive Brand
         if (selectedBrand !== 'Todas') {
             result = result.filter(p => p.brand === selectedBrand);
         }
 
-        // Defensive Price (ensure numbers)
         const minP = parseFloat(priceRange.min) || 0;
         const maxP = priceRange.max === '' ? Infinity : (parseFloat(priceRange.max) || Infinity);
         result = result.filter(p => {
@@ -72,12 +50,6 @@ const Catalog = () => {
             return price >= minP && price <= maxP;
         });
 
-        // Defensive Rating
-        if (selectedRating) {
-            result = result.filter(p => (p.rating || 0) >= selectedRating);
-        }
-
-        // Robust Sorting
         const sortedResult = [...result];
         if (sortBy === 'Precio: Menor a Mayor') {
             sortedResult.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
@@ -86,63 +58,143 @@ const Catalog = () => {
         } else if (sortBy === 'Nombre') {
             sortedResult.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         } else {
-            // Default: Newest first (highest ID first)
             sortedResult.sort((a, b) => (parseInt(b.id) || 0) - (parseInt(a.id) || 0));
         }
 
         return sortedResult;
-    }, [products, searchTerm, selectedCategory, selectedBrand, priceRange, sortBy, selectedRating]);
+    }, [products, searchTerm, selectedCategory, selectedBrand, priceRange, sortBy]);
 
     const handleClearFilters = () => {
         setSelectedCategory('Todos');
         setSelectedBrand('Todas');
         setPriceRange({ min: 0, max: '' });
-        setSelectedRating(null);
         setSearchTerm('');
     };
 
     return (
-        <div className="min-h-screen bg-brand-cream/20 dark:bg-brand-charcoal pb-24 transition-colors duration-700">
-            <div className="container mx-auto px-6 pt-12 py-12">
-                <div className="flex flex-col lg:flex-row gap-16">
-                    <div className="flex-grow order-2 lg:order-1">
+        <div className="min-h-screen bg-white dark:bg-[#151718] pb-24 transition-colors duration-700">
+            {/* Header Banner */}
+            <div className="bg-[#f4f4f4] dark:bg-[#1f2122] py-20 px-6">
+                <div className="container mx-auto">
+                    <h1 className="text-4xl md:text-5xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter mb-4">Nuestro Catálogo</h1>
+                    <p className="text-gray-500 max-w-xl text-sm font-medium leading-relaxed">Explora nuestra colección de productos diseñados para potenciar tu vida con tecnología de vanguardia y energía sostenible.</p>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-6 py-12">
+                <div className="flex flex-col lg:flex-row gap-12">
+                    
+                    {/* Sidebar Filters (Desktop) */}
+                    <aside className="hidden lg:block w-72 flex-shrink-0">
+                        <div className="sticky top-32 space-y-8">
+                            <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
+                                <h3 className="text-lg font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-widest">Filtros</h3>
+                                <button onClick={handleClearFilters} className="text-[10px] font-bold uppercase tracking-widest text-brand-green hover:text-brand-charcoal transition-colors">Limpiar</button>
+                            </div>
+
+                            {/* Category Filter */}
+                            <div>
+                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Categoría</h4>
+                                <div className="space-y-2">
+                                    {categories.map(cat => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => setSelectedCategory(cat)}
+                                            className={`block w-full text-left px-4 py-2 text-sm font-bold transition-all ${selectedCategory === cat
+                                                ? 'text-brand-green bg-brand-green/10'
+                                                : 'text-gray-500 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal'
+                                                }`}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Brand Filter */}
+                            <div>
+                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Marca</h4>
+                                <div className="space-y-2">
+                                    {brands.map(brand => (
+                                        <button
+                                            key={brand}
+                                            onClick={() => setSelectedBrand(brand)}
+                                            className={`block w-full text-left px-4 py-2 text-sm font-bold transition-all ${selectedBrand === brand
+                                                ? 'text-brand-green bg-brand-green/10'
+                                                : 'text-gray-500 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal'
+                                                }`}
+                                        >
+                                            {brand}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Price Range */}
+                            <div>
+                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Presupuesto</h4>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <input
+                                            type="number"
+                                            value={priceRange.min}
+                                            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                                            placeholder="Mín"
+                                            className="w-full px-4 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none outline-none text-xs font-bold dark:text-brand-cream focus:ring-1 focus:ring-brand-green transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="number"
+                                            value={priceRange.max}
+                                            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                                            placeholder="Máx"
+                                            className="w-full px-4 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none outline-none text-xs font-bold dark:text-brand-cream focus:ring-1 focus:ring-brand-green transition-all"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <div className="flex-grow">
                         {/* Search and Sort Toolbar */}
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-12">
-                            <div className="flex items-center gap-6 w-full sm:w-auto">
-                                <h2 className="text-2xl font-black text-brand-charcoal dark:text-brand-cream whitespace-nowrap tracking-tighter">
-                                    {filteredProducts.length} <span className="text-brand-charcoal/30 dark:text-brand-cream/30 font-black uppercase text-[10px] ml-2 tracking-[0.3em]">Productos</span>
-                                </h2>
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+                            <div className="flex items-center gap-4 w-full sm:w-auto">
                                 <button
                                     onClick={() => setIsFilterDrawerOpen(true)}
-                                    className="lg:hidden p-4 bg-brand-green text-brand-cream rounded-2xl shadow-xl shadow-brand-red/20 active:scale-95 transition-all"
+                                    className="lg:hidden p-3 bg-[#f4f4f4] dark:bg-[#1f2122] text-brand-charcoal dark:text-brand-cream active:scale-95 transition-all"
                                 >
                                     <FontAwesomeIcon icon={faFilter} />
                                 </button>
+                                <span className="text-sm font-bold text-gray-500">
+                                    {filteredProducts.length} Productos
+                                </span>
                             </div>
 
                             <div className="flex items-center gap-4 w-full sm:w-auto">
-                                <div className="relative group w-full sm:w-72">
-                                    <FontAwesomeIcon icon={faSearch} className="absolute left-5 top-1/2 -translate-y-1/2 text-brand-charcoal/20 dark:text-brand-cream/20 group-focus-within:text-brand-red transition-colors" />
+                                <div className="relative group w-full sm:w-64">
+                                    <FontAwesomeIcon icon={faSearch} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                                     <input
                                         type="text"
-                                        placeholder="Busca lo que necesites..."
+                                        placeholder="Buscar..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-12 pr-6 py-4 rounded-[1.5rem] bg-white dark:bg-brand-charcoal/50 border border-brand-charcoal/5 dark:border-brand-cream/10 outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all dark:text-brand-cream text-sm font-bold placeholder:text-brand-charcoal/20 dark:placeholder:text-brand-cream/20 shadow-sm"
+                                        className="w-full pl-10 pr-4 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none outline-none text-xs font-bold dark:text-brand-cream focus:ring-1 focus:ring-brand-green transition-all"
                                     />
                                 </div>
                                 <div className="relative w-full sm:w-auto">
                                     <select
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        className="appearance-none w-full bg-white dark:bg-brand-charcoal/50 border border-brand-charcoal/5 dark:border-brand-cream/10 rounded-[1.5rem] px-8 py-4 pr-14 text-sm font-black text-brand-charcoal/60 dark:text-brand-cream/60 outline-none cursor-pointer focus:ring-2 focus:ring-brand-green/20 shadow-sm transition-all"
+                                        className="appearance-none w-full bg-[#f4f4f4] dark:bg-[#1f2122] border-none px-6 py-3 pr-10 text-xs font-bold text-brand-charcoal dark:text-brand-cream outline-none cursor-pointer focus:ring-1 focus:ring-brand-green transition-all"
                                     >
                                         <option>Popularidad</option>
                                         <option>Precio: Menor a Mayor</option>
                                         <option>Precio: Mayor a Menor</option>
                                         <option>Nombre</option>
                                     </select>
-                                    <FontAwesomeIcon icon={faChevronDown} className="absolute right-6 top-1/2 -translate-y-1/2 text-brand-charcoal/20 pointer-events-none text-[10px]" />
+                                    <FontAwesomeIcon icon={faChevronDown} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[10px]" />
                                 </div>
                             </div>
                         </div>
@@ -150,33 +202,27 @@ const Catalog = () => {
                         {/* Product Grid */}
                         <AnimatePresence mode="popLayout">
                             {loading ? (
-                                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full text-brand-charcoal">
-                                    {[1, 2, 3, 4, 5, 6].map(i => (
-                                        <div key={i} className="h-[520px] bg-white dark:bg-brand-charcoal/40 rounded-[2.5rem] p-6 flex flex-col gap-6 border border-brand-charcoal/5 dark:border-brand-cream/5 animate-pulse">
-                                            <div className="h-64 bg-brand-cream/50 dark:bg-brand-cream/5 rounded-[2rem]" />
-                                            <div className="h-4 w-1/4 bg-brand-cream/50 dark:bg-brand-cream/5 rounded-full" />
-                                            <div className="h-8 w-3/4 bg-brand-cream/50 dark:bg-brand-cream/5 rounded-full" />
-                                            <div className="mt-auto flex justify-between items-end">
-                                                <div className="space-y-3">
-                                                    <div className="h-10 w-32 bg-brand-cream/50 dark:bg-brand-cream/5 rounded-full" />
-                                                </div>
-                                                <div className="w-14 h-14 bg-brand-cream/50 dark:bg-brand-cream/5 rounded-full" />
-                                            </div>
+                                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                                        <div key={i} className="h-96 bg-[#f4f4f4] dark:bg-[#1f2122] animate-pulse flex flex-col p-4 gap-4">
+                                            <div className="h-48 bg-gray-200 dark:bg-gray-800 w-full mb-4" />
+                                            <div className="h-4 bg-gray-200 dark:bg-gray-800 w-1/3" />
+                                            <div className="h-6 bg-gray-200 dark:bg-gray-800 w-3/4" />
                                         </div>
                                     ))}
                                 </div>
                             ) : filteredProducts.length > 0 ? (
                                 <motion.div
                                     layout
-                                    className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                                    className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6"
                                 >
                                     {filteredProducts.map(product => (
                                         <motion.div
                                             key={product.id}
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.95 }}
-                                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>
@@ -184,14 +230,12 @@ const Catalog = () => {
                                 </motion.div>
                             ) : (
                                 <div className="flex flex-col items-center justify-center py-32 text-center">
-                                    <div className="w-24 h-24 bg-brand-cream dark:bg-brand-charcoal/50 rounded-full flex items-center justify-center mb-8 shadow-inner">
-                                        <FontAwesomeIcon icon={faTimes} className="text-4xl text-brand-charcoal/10" />
-                                    </div>
-                                    <h3 className="text-3xl font-black text-brand-charcoal dark:text-brand-cream mb-3 tracking-tighter italic">Sin hallazgos</h3>
-                                    <p className="text-brand-charcoal/40 dark:text-brand-cream/40 mb-10 max-w-sm font-medium">Refina tus filtros para encontrar lo que estás buscando.</p>
+                                    <FontAwesomeIcon icon={faTimes} className="text-4xl text-gray-300 mb-6" />
+                                    <h3 className="text-2xl font-black text-brand-charcoal dark:text-brand-cream mb-2 uppercase tracking-tight">Cero Resultados</h3>
+                                    <p className="text-gray-500 mb-8 max-w-sm text-sm">No encontramos productos que coincidan con tu búsqueda. ¿Intentamos con otros filtros?</p>
                                     <button
                                         onClick={handleClearFilters}
-                                        className="bg-brand-green text-brand-cream px-10 py-4 rounded-full font-black uppercase text-[10px] tracking-[0.3em] hover:bg-brand-forest transition-all shadow-xl shadow-brand-green/20 active:scale-95"
+                                        className="bg-brand-charcoal dark:bg-brand-cream text-white dark:text-brand-charcoal px-8 py-3 uppercase text-xs font-black tracking-widest hover:bg-brand-green transition-colors"
                                     >
                                         Limpiar Filtros
                                     </button>
@@ -199,209 +243,6 @@ const Catalog = () => {
                             )}
                         </AnimatePresence>
                     </div>
-
-                    {/* Sidebar Filters (Desktop) */}
-                    <aside className="hidden lg:block w-[400px] flex-shrink-0 order-1 lg:order-2">
-                        <div className="bg-white dark:bg-brand-charcoal/40 p-12 rounded-[3rem] border border-brand-charcoal/5 dark:border-brand-cream/5 sticky top-40 shadow-2xl shadow-brand-charcoal/5 dark:shadow-none backdrop-blur-xl">
-                            <div className="flex items-center justify-between mb-10">
-                                <h3 className="text-2xl font-black text-brand-charcoal dark:text-brand-cream italic tracking-tighter">Filtros Avanzados</h3>
-                                <button onClick={handleClearFilters} className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green hover:text-brand-forest transition-colors">Resetear</button>
-                            </div>
-
-                            {/* Brand Filter */}
-                            <div className="mb-8 p-6 bg-brand-cream/30 dark:bg-brand-charcoal/20 rounded-[2rem]">
-                                <button
-                                    onClick={() => toggleSection('brand')}
-                                    className="w-full text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/40 dark:text-brand-cream/40 mb-4 flex items-center justify-between hover:text-brand-green transition-colors"
-                                >
-                                    Marca
-                                    <FontAwesomeIcon
-                                        icon={faChevronDown}
-                                        className={`text-[8px] transition-transform duration-500 ${collapsedSections.brand ? '-rotate-90' : ''}`}
-                                    />
-                                </button>
-                                <AnimatePresence initial={false}>
-                                    {!collapsedSections.brand && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="grid grid-cols-2 gap-3 pb-2">
-                                                {brands.map(brand => (
-                                                    <button
-                                                        key={brand}
-                                                        onClick={() => setSelectedBrand(brand)}
-                                                        className={`px-4 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${selectedBrand === brand
-                                                            ? 'bg-brand-green border-brand-green text-brand-cream shadow-xl shadow-brand-green/20'
-                                                            : 'bg-white dark:bg-brand-charcoal/50 border-brand-charcoal/5 dark:border-brand-cream/10 text-brand-charcoal/50 dark:text-brand-cream/50 hover:border-brand-green/30'
-                                                            }`}
-                                                    >
-                                                        {brand}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Category Filter */}
-                            <div className="mb-8 p-6 bg-brand-cream/30 dark:bg-brand-charcoal/20 rounded-[2rem]">
-                                <button
-                                    onClick={() => toggleSection('category')}
-                                    className="w-full text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/40 dark:text-brand-cream/40 mb-4 flex items-center justify-between hover:text-brand-green transition-colors"
-                                >
-                                    Categoría
-                                    <FontAwesomeIcon
-                                        icon={faChevronDown}
-                                        className={`text-[8px] transition-transform duration-500 ${collapsedSections.category ? '-rotate-90' : ''}`}
-                                    />
-                                </button>
-                                <AnimatePresence initial={false}>
-                                    {!collapsedSections.category && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="grid grid-cols-2 gap-3 pb-2">
-                                                {categories.map(cat => (
-                                                    <button
-                                                        key={cat}
-                                                        onClick={() => setSelectedCategory(cat)}
-                                                        className={`px-4 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${selectedCategory === cat
-                                                            ? 'bg-brand-green border-brand-green text-brand-cream shadow-xl shadow-brand-green/20'
-                                                            : 'bg-white dark:bg-brand-charcoal/50 border-brand-charcoal/5 dark:border-brand-cream/10 text-brand-charcoal/50 dark:text-brand-cream/50 hover:border-brand-green/30'
-                                                            }`}
-                                                    >
-                                                        {cat}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Rating Selector */}
-                            <div className="mb-8 p-6 bg-brand-cream/30 dark:bg-brand-charcoal/20 rounded-[2rem]">
-                                <button
-                                    onClick={() => toggleSection('rating')}
-                                    className="w-full text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/40 dark:text-brand-cream/40 mb-4 flex items-center justify-between hover:text-brand-green transition-colors"
-                                >
-                                    Calificación
-                                    <FontAwesomeIcon
-                                        icon={faChevronDown}
-                                        className={`text-[8px] transition-transform duration-500 ${collapsedSections.rating ? '-rotate-90' : ''}`}
-                                    />
-                                </button>
-                                <AnimatePresence initial={false}>
-                                    {!collapsedSections.rating && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="flex justify-between pb-2">
-                                                {[1, 2, 3, 4, 5].map(rating => (
-                                                    <button
-                                                        key={rating}
-                                                        onClick={() => setSelectedRating(rating === selectedRating ? null : rating)}
-                                                        className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border ${selectedRating === rating
-                                                            ? 'bg-brand-green border-brand-green text-brand-cream shadow-xl shadow-brand-green/30'
-                                                            : 'bg-white dark:bg-brand-charcoal/50 border-brand-charcoal/5 dark:border-brand-cream/10 text-brand-charcoal/60 dark:text-brand-cream/60 hover:border-brand-green/30 focus:ring-2 focus:ring-brand-green/20'
-                                                            }`}
-                                                    >
-                                                        <span className="text-sm font-black">{rating}</span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Price Range Filter */}
-                            <div className="mb-10 p-6 bg-brand-cream/30 dark:bg-brand-charcoal/20 rounded-[2rem]">
-                                <button
-                                    onClick={() => toggleSection('price')}
-                                    className="w-full text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/40 dark:text-brand-cream/40 mb-4 flex items-center justify-between hover:text-brand-green transition-colors"
-                                >
-                                    Presupuesto (COP)
-                                    <FontAwesomeIcon
-                                        icon={faChevronDown}
-                                        className={`text-[8px] transition-transform duration-500 ${collapsedSections.price ? '-rotate-90' : ''}`}
-                                    />
-                                </button>
-                                <AnimatePresence initial={false}>
-                                    {!collapsedSections.price && (
-                                        <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                                            className="overflow-hidden"
-                                        >
-                                            <div className="pb-2">
-                                                <div className="flex items-end gap-1.5 h-16 mb-8 px-2">
-                                                    {[4, 8, 15, 25, 40, 60, 80, 100, 85, 60, 40, 20, 10, 5].map((h, i) => (
-                                                        <div key={i} className={`flex-grow rounded-t-lg transition-all duration-1000 ${i > 2 && i < 11 ? 'bg-brand-green' : 'bg-brand-charcoal/5 dark:bg-brand-cream/5'}`} style={{ height: `${h}%` }}></div>
-                                                    ))}
-                                                </div>
-
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex-grow">
-                                                        <p className="text-[8px] font-black text-brand-charcoal/30 dark:text-brand-cream/30 uppercase tracking-[0.2em] mb-2 ml-1">Mínimo</p>
-                                                        <div className="relative">
-                                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-charcoal/40 dark:text-brand-cream/40 text-xs">$</span>
-                                                            <input
-                                                                type="number"
-                                                                value={priceRange.min}
-                                                                onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                                                                placeholder="0"
-                                                                className="w-full pl-8 pr-4 py-4 bg-white dark:bg-brand-charcoal border border-brand-charcoal/5 dark:border-brand-cream/10 rounded-2xl outline-none text-xs font-black dark:text-brand-cream focus:ring-2 focus:ring-brand-green/20 shadow-sm transition-all"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex-grow">
-                                                        <p className="text-[8px] font-black text-brand-charcoal/30 dark:text-brand-cream/30 uppercase tracking-[0.2em] mb-2 ml-1">Máximo</p>
-                                                        <div className="relative">
-                                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-charcoal/40 dark:text-brand-cream/40 text-xs">$</span>
-                                                            <input
-                                                                type="number"
-                                                                value={priceRange.max}
-                                                                onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                                                                placeholder="Max"
-                                                                className="w-full pl-8 pr-4 py-4 bg-white dark:bg-brand-charcoal border border-brand-charcoal/5 dark:border-brand-cream/10 rounded-2xl outline-none text-xs font-black dark:text-brand-cream focus:ring-2 focus:ring-brand-green/20 shadow-sm transition-all"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Promo Content Section */}
-                            <div className="bg-gradient-to-br from-brand-forest to-brand-green p-8 rounded-[2.5rem] text-brand-cream overflow-hidden relative group cursor-pointer shadow-2xl shadow-brand-green/20 hover:scale-[1.02] transition-all duration-700">
-                                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                                <div className="relative z-10">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-3 opacity-70">Sostenibilidad</p>
-                                    <h4 className="text-3xl font-black italic tracking-tighter leading-[0.9] mb-6">Membresía <br /><span className="text-brand-cream/80"> Energy PRO </span></h4>
-                                    <button className="bg-brand-cream text-brand-green px-10 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:shadow-xl transition-all active:scale-95">Mejorar Ahora</button>
-                                </div>
-                                <FontAwesomeIcon icon={faChartBar} className="absolute -right-6 -bottom-6 text-9xl opacity-20 rotate-12 group-hover:rotate-0 transition-all duration-1000" />
-                            </div>
-                        </div>
-                    </aside>
                 </div>
             </div>
 
@@ -414,33 +255,33 @@ const Catalog = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsFilterDrawerOpen(false)}
-                            className="fixed inset-0 bg-brand-charcoal/80 backdrop-blur-xl z-[100] lg:hidden"
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] lg:hidden"
                         />
                         <motion.div
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
-                            transition={{ type: 'spring', damping: 30, stiffness: 200 }}
-                            className="fixed inset-y-0 right-0 w-full max-w-[400px] bg-brand-cream dark:bg-brand-charcoal z-[101] lg:hidden overflow-y-auto p-12 shadow-2xl"
+                            transition={{ type: 'tween', duration: 0.3 }}
+                            className="fixed inset-y-0 right-0 w-full max-w-xs bg-white dark:bg-[#151718] z-[101] lg:hidden overflow-y-auto p-8 shadow-2xl"
                         >
-                            <div className="flex items-center justify-between mb-12">
-                                <h3 className="text-3xl font-black text-brand-charcoal dark:text-brand-cream italic tracking-tighter">Filtros</h3>
-                                <button onClick={() => setIsFilterDrawerOpen(false)} className="w-12 h-12 bg-brand-charcoal/5 dark:bg-brand-cream/5 rounded-full text-brand-charcoal dark:text-brand-cream flex items-center justify-center transition-all hover:bg-brand-green hover:text-brand-cream">
-                                    <FontAwesomeIcon icon={faTimes} />
+                            <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 dark:border-gray-800">
+                                <h3 className="text-xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tight">Filtros</h3>
+                                <button onClick={() => setIsFilterDrawerOpen(false)} className="text-gray-400 hover:text-brand-charcoal transition-all">
+                                    <FontAwesomeIcon icon={faTimes} className="text-xl" />
                                 </button>
                             </div>
 
-                            <div className="space-y-14">
+                            <div className="space-y-8">
                                 <div>
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/30 dark:text-brand-cream/30 mb-8">Marca</h4>
-                                    <div className="flex flex-wrap gap-3">
+                                    <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Marca</h4>
+                                    <div className="flex flex-wrap gap-2">
                                         {brands.map(brand => (
                                             <button
                                                 key={brand}
                                                 onClick={() => setSelectedBrand(brand)}
-                                                className={`px-6 py-4 rounded-2xl text-[10px] font-black tracking-widest transition-all duration-300 ${selectedBrand === brand
-                                                    ? 'bg-brand-green text-brand-cream shadow-xl shadow-brand-red/20'
-                                                    : 'bg-brand-charcoal/5 dark:bg-brand-cream/5 text-brand-charcoal/50 dark:text-brand-cream/50'
+                                                className={`px-4 py-2 border text-[10px] font-bold tracking-widest uppercase transition-all ${selectedBrand === brand
+                                                    ? 'border-brand-green bg-brand-green text-white'
+                                                    : 'border-gray-200 dark:border-gray-700 text-gray-500'
                                                     }`}
                                             >
                                                 {brand}
@@ -450,15 +291,15 @@ const Catalog = () => {
                                 </div>
 
                                 <div>
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/30 dark:text-brand-cream/30 mb-8">Categoría</h4>
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Categoría</h4>
+                                    <div className="flex flex-col gap-2">
                                         {categories.map(cat => (
                                             <button
                                                 key={cat}
                                                 onClick={() => setSelectedCategory(cat)}
-                                                className={`px-4 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all duration-300 ${selectedCategory === cat
-                                                    ? 'bg-brand-green border-brand-green text-brand-cream shadow-xl shadow-brand-green/20'
-                                                    : 'bg-white dark:bg-brand-charcoal/50 border-brand-charcoal/5 dark:border-brand-cream/10 text-brand-charcoal/50 dark:text-brand-cream/50'
+                                                className={`text-left px-4 py-3 border text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory === cat
+                                                    ? 'border-brand-green text-brand-green bg-brand-green/5'
+                                                    : 'border-gray-100 dark:border-gray-800 text-gray-500'
                                                     }`}
                                             >
                                                 {cat}
@@ -468,37 +309,31 @@ const Catalog = () => {
                                 </div>
 
                                 <div>
-                                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/30 dark:text-brand-cream/30 mb-8">Presupuesto</h4>
-                                    <div className="flex items-center gap-4">
-                                        <div className="relative flex-grow">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-charcoal/40 dark:text-brand-cream/40 text-xs">$</span>
-                                            <input
-                                                type="number"
-                                                value={priceRange.min}
-                                                onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                                                placeholder="Mín"
-                                                className="w-full pl-8 pr-4 py-4 bg-white dark:bg-brand-charcoal border border-brand-charcoal/5 dark:border-brand-cream/10 rounded-2xl outline-none text-[10px] font-black dark:text-brand-cream focus:ring-2 focus:ring-brand-green/20 shadow-sm"
-                                            />
-                                        </div>
-                                        <span className="text-brand-charcoal/20 dark:text-brand-cream/20 font-black">/</span>
-                                        <div className="relative flex-grow">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-charcoal/40 dark:text-brand-cream/40 text-xs">$</span>
-                                            <input
-                                                type="number"
-                                                value={priceRange.max}
-                                                onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                                                placeholder="Máx"
-                                                className="w-full pl-8 pr-4 py-4 bg-white dark:bg-brand-charcoal border border-brand-charcoal/5 dark:border-brand-cream/10 rounded-2xl outline-none text-[10px] font-black dark:text-brand-cream focus:ring-2 focus:ring-brand-green/20 shadow-sm"
-                                            />
-                                        </div>
+                                    <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Presupuesto</h4>
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="number"
+                                            value={priceRange.min}
+                                            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                                            placeholder="Mín"
+                                            className="w-full px-3 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none text-xs font-bold outline-none"
+                                        />
+                                        <span className="text-gray-300">-</span>
+                                        <input
+                                            type="number"
+                                            value={priceRange.max}
+                                            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                                            placeholder="Máx"
+                                            className="w-full px-3 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none text-xs font-bold outline-none"
+                                        />
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={() => setIsFilterDrawerOpen(false)}
-                                    className="w-full bg-brand-green text-brand-cream py-6 rounded-3xl font-black uppercase tracking-[0.3em] shadow-2xl shadow-brand-green/30 active:scale-[0.98] transition-all"
+                                    className="w-full bg-brand-charcoal dark:bg-brand-cream text-white dark:text-brand-charcoal py-4 font-black uppercase text-xs tracking-widest mt-8 border-none hover:bg-brand-green transition-colors"
                                 >
-                                    Aplicar Filtros
+                                    Ver Resultados
                                 </button>
                             </div>
                         </motion.div>
