@@ -6,9 +6,10 @@ import { useAuth } from '../context/AuthContext';
 import LoginModal from './LoginModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faSun, faMoon, faShoppingCart, faUser, faSearch,
-    faBars, faTimes, faHome, faStore, faCrown, faTag
+    faSearch, faUser, faShoppingCart, faBars, faTimes,
+    faHome, faStore, faCrown, faTag, faPhoneVolume
 } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -17,21 +18,8 @@ const Navbar = () => {
     const { user, isAuthenticated, logout } = useAuth();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const [pastBanner, setPastBanner] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-
-    const isHome = location.pathname === '/';
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
-            setPastBanner(window.scrollY > window.innerHeight - 100);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     useEffect(() => {
         setIsMenuOpen(false);
@@ -39,153 +27,121 @@ const Navbar = () => {
 
     const isAdmin = location.pathname.startsWith('/admin');
 
-    const navClasses = scrolled
-        ? "fixed top-0 w-full z-[100] bg-white/80 dark:bg-brand-charcoal/80 backdrop-blur-2xl border-b border-brand-charcoal/[0.03] dark:border-white/[0.03] transition-all duration-700"
-        : "fixed top-0 w-full z-[100] bg-transparent border-b border-transparent transition-all duration-700";
-
-    const isBannerArea = isHome && !pastBanner;
-    const textClasses = isBannerArea
-        ? "text-brand-cream"
-        : "text-brand-charcoal dark:text-brand-cream";
-
     const navItems = isAdmin
         ? [
-            { label: 'Visión General', path: '/admin', icon: faHome },
-            { label: 'Logística', path: '/admin/orders', icon: faTag },
-            { label: 'Inventario', path: '/admin/products', icon: faStore },
-            { label: 'Audiencia', path: '/admin/customers', icon: faUser },
+            { label: 'Visión General', path: '/admin' },
+            { label: 'Logística', path: '/admin/orders' },
+            { label: 'Inventario', path: '/admin/products' },
+            { label: 'Audiencia', path: '/admin/customers' },
         ]
         : [
-            { label: 'Inicio', path: '/', icon: faHome },
-            { label: 'La Tienda', path: '/catalog', icon: faStore },
-            { label: 'Lo Más Pro', path: '/bestsellers', icon: faCrown },
-            { label: 'Gangazos', path: '/sale', icon: faTag }
+            { label: 'Inicio', path: '/' },
+            { label: 'Categorías', path: '/catalog' },
+            { label: 'Productos', path: '/bestsellers' },
+            { label: 'Características', path: '/features' },
+            { label: 'Blog', path: '/blog' },
+            { label: 'Elementos', path: '/elements' },
+            { label: 'Ofertas Especiales', path: '/sale' },
+            { label: 'Comprar Pro', path: '/buy' }
         ];
 
-    const menuVariants = {
-        hidden: { x: '100%' },
-        visible: {
-            x: 0,
-            transition: { type: 'spring', damping: 30, stiffness: 200, staggerChildren: 0.1 }
-        },
-        exit: { x: '100%' }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, x: 50 },
-        visible: { opacity: 1, x: 0 }
-    };
-
-    const ThemeToggle = ({ className = "" }) => (
-        <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleTheme}
-            className={`relative w-16 h-8 rounded-full p-1 transition-colors duration-500 ${theme === 'dark' ? 'bg-brand-green/20' : 'bg-brand-charcoal/10'
-                } ${className}`}
-        >
-            <motion.div
-                animate={{ x: theme === 'dark' ? 32 : 0 }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                className="w-6 h-6 bg-brand-green rounded-full flex items-center justify-center text-white text-xs shadow-lg"
-            >
-                <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
-            </motion.div>
-        </motion.button>
-    );
-
     return (
-        <>
-            <motion.nav
-                initial={{ y: -100 }}
-                animate={{ y: 0 }}
-                className={navClasses}
-            >
-                <div className="container mx-auto px-6 py-5 flex justify-between items-center">
-                    {/* Brand */}
-                    <Link to="/" className="z-[300]">
-                        <motion.div
-                            className="flex items-center gap-2 group"
-                            whileHover={{ scale: 1.02 }}
-                        >
-                            <span className={`text-2xl font-black uppercase tracking-tighter ${textClasses}`}>
-                                LOGO
-                            </span>
-                            <span className="text-brand-green text-2xl font-black italic">
-                                Energy
-                            </span>
-                        </motion.div>
-                    </Link>
+        <header className="w-full bg-white dark:bg-[#1A1D1E] relative z-50 shadow-sm">
+            {/* Top Green Bar */}
+            <div className="bg-brand-green text-white py-2 px-6 flex justify-between items-center text-[10px] md:text-xs">
+                <div className="hidden md:flex gap-4 font-semibold opacity-90">
+                    <span className="cursor-pointer">ESPAÑOL ▾</span>
+                    <span className="cursor-pointer">COP ▾</span>
+                </div>
+                <div className="flex-1 text-center font-bold tracking-widest uppercase">
+                    OBTÉN HASTA <span className="bg-white text-brand-green px-1 mx-1 rounded-sm">40% OFF</span> EN NUEVOS ESTILOS <Link to="/sale" className="underline ml-2 hover:text-brand-charcoal transition-colors">COMPRAR AHORA</Link>
+                </div>
+                <div className="hidden xl:flex gap-6 font-semibold opacity-90">
+                    <Link to="#" className="hover:text-brand-charcoal transition-colors">Mi Cuenta</Link>
+                    <Link to="#" className="hover:text-brand-charcoal transition-colors">Contáctanos</Link>
+                    <Link to="#" className="hover:text-brand-charcoal transition-colors">Blog</Link>
+                    <Link to="#" className="hover:text-brand-charcoal transition-colors">Mi Lista de Deseos</Link>
+                    <button onClick={() => setIsLoginOpen(true)} className="hover:text-brand-charcoal transition-colors">Iniciar Sesión</button>
+                    <div className="flex gap-3">
+                        {/* Social Icons Placeholder */}
+                        <span className="font-bold">f</span>
+                        <span className="font-bold">t</span>
+                        <span className="font-bold">in</span>
+                    </div>
+                </div>
+            </div>
 
-                    {/* Desktop Menu */}
-                    {!isAdmin && (
-                        <nav className="hidden xl:flex items-center space-x-12 absolute left-1/2 -translate-x-1/2">
-                            {navItems.map(item => (
-                                <Link
-                                    key={item.path}
-                                    to={item.path}
-                                    className={`${textClasses} text-[11px] font-bold uppercase tracking-[0.25em] transition-all relative group flex items-center gap-3`}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={item.icon}
-                                        className="text-lg opacity-40 group-hover:opacity-100 group-hover:text-brand-green transition-all duration-300"
-                                    />
-                                    <span className="group-hover:text-brand-charcoal dark:group-hover:text-brand-cream transition-colors">
-                                        {item.label}
-                                    </span>
-                                    <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-brand-green transition-all duration-500 group-hover:w-full" />
-                                </Link>
-                            ))}
-                        </nav>
-                    )}
-
-                    {/* Toolbar Icons */}
-                    <div className="flex items-center space-x-4 md:space-x-8">
-                        <motion.button whileHover={{ scale: 1.1 }} className={`${textClasses} opacity-60 hover:opacity-100 hover:text-brand-green hidden md:block transition-colors`}>
-                            <FontAwesomeIcon icon={faSearch} className="text-lg" />
-                        </motion.button>
-
-                        <ThemeToggle className="hidden md:flex" />
-
-                        <motion.button
-                            onClick={toggleCart}
-                            whileHover={{ scale: 1.1 }}
-                            className={`${textClasses} relative group p-2 flex items-center justify-center`}
-                        >
-                            <FontAwesomeIcon icon={faShoppingCart} className="text-lg opacity-60 group-hover:opacity-100 group-hover:text-brand-green transition-all" />
-                            <AnimatePresence>
-                                {itemCount > 0 && (
-                                    <motion.span
-                                        initial={{ scale: 0 }}
-                                        animate={{ scale: 1 }}
-                                        exit={{ scale: 0 }}
-                                        className="absolute top-0 right-0 w-4 h-4 bg-brand-green text-brand-cream text-[8px] font-black flex items-center justify-center rounded-full shadow-lg"
-                                    >
-                                        {itemCount}
-                                    </motion.span>
-                                )}
-                            </AnimatePresence>
-                        </motion.button>
-
-                        <motion.button
-                            onClick={() => setIsLoginOpen(true)}
-                            whileHover={{ scale: 1.1 }}
-                            className={`${textClasses} opacity-60 hover:opacity-100 hover:text-brand-green hidden md:block transition-colors`}
-                        >
-                            <FontAwesomeIcon icon={faUser} className="text-lg" />
-                        </motion.button>
-
-                        <button
-                            onClick={() => setIsMenuOpen(true)}
-                            className={`${textClasses} xl:hidden p-2 hover:text-brand-green transition-colors`}
-                        >
-                            <FontAwesomeIcon icon={faBars} className="text-2xl" />
+            {/* Middle White Bar */}
+            <div className="container mx-auto px-6 py-6 flex justify-between items-center gap-4">
+                {/* Search */}
+                <div className="hidden md:flex flex-1">
+                    <div className="relative w-full max-w-sm">
+                        <input
+                            type="text"
+                            placeholder="Buscar..."
+                            className="w-full bg-gray-100 dark:bg-black/20 text-brand-charcoal dark:text-brand-cream rounded-full py-3 px-6 text-sm outline-none border border-transparent focus:border-brand-green transition-colors"
+                        />
+                        <button className="absolute right-0 top-0 h-full px-6 flex items-center justify-center text-brand-charcoal/40 hover:text-brand-green">
+                            <FontAwesomeIcon icon={faSearch} />
                         </button>
                     </div>
                 </div>
-            </motion.nav>
 
-            {/* Mobile Menu Overlay */}
+                {/* Logo */}
+                <div className="flex-1 flex justify-start md:justify-center">
+                    <Link to="/" className="text-3xl lg:text-4xl font-black uppercase tracking-tighter text-brand-charcoal dark:text-brand-cream flex items-center gap-2 group">
+                        LOGO<span className="text-brand-green italic group-hover:scale-105 transition-transform">Energy</span>
+                    </Link>
+                </div>
+
+                {/* Contact & Icons */}
+                <div className="flex flex-1 justify-end items-center gap-6 lg:gap-10">
+                    <div className="hidden lg:flex items-center gap-3">
+                        <FontAwesomeIcon icon={faPhoneVolume} className="text-3xl text-brand-charcoal/20 dark:text-brand-cream/20" />
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-brand-charcoal/50 dark:text-brand-cream/50 font-bold uppercase tracking-widest leading-none mb-1">Llámanos Ahora</span>
+                            <span className="font-black text-brand-charcoal dark:text-brand-cream text-lg leading-none">+123 5678 890</span>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-6 text-brand-charcoal dark:text-brand-cream">
+                        <button onClick={() => setIsLoginOpen(true)} className="hover:text-brand-green transition-colors hidden md:block">
+                            <FontAwesomeIcon icon={faUser} className="text-xl" />
+                        </button>
+                        <button className="hover:text-brand-green transition-colors hidden md:block relative">
+                            <FontAwesomeIcon icon={faHeart} className="text-xl" />
+                        </button>
+                        <button onClick={toggleCart} className="hover:text-brand-green transition-colors relative flex items-center">
+                            <div className="relative">
+                                <FontAwesomeIcon icon={faShoppingCart} className="text-xl" />
+                                <span className="absolute -top-2 -right-2 bg-brand-green text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-md">
+                                    {itemCount}
+                                </span>
+                            </div>
+                        </button>
+                        <button onClick={() => setIsMenuOpen(true)} className="lg:hidden text-2xl hover:text-brand-green">
+                            <FontAwesomeIcon icon={faBars} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Bottom Nav Menu */}
+            <div className="hidden lg:flex border-t border-brand-charcoal/5 dark:border-white/5 bg-white dark:bg-[#1A1D1E]">
+                <nav className="container mx-auto px-6 flex justify-center space-x-10 py-4">
+                    {navItems.map(item => (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`text-[11px] font-bold uppercase tracking-widest text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-colors ${location.pathname === item.path ? 'text-brand-green' : ''}`}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </nav>
+            </div>
+
+            {/* Mobile Menu */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <>
@@ -194,61 +150,39 @@ const Navbar = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsMenuOpen(false)}
-                            className="fixed inset-0 bg-brand-charcoal/40 backdrop-blur-xl z-[400]"
+                            className="fixed inset-0 bg-black/50 z-[400] lg:hidden"
                         />
                         <motion.div
-                            variants={menuVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                            className="fixed right-0 top-0 h-full w-full max-w-sm bg-brand-cream dark:bg-brand-charcoal z-[401] p-12 flex flex-col justify-between shadow-2xl border-l border-white/10"
+                            initial={{ x: '-100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '-100%' }}
+                            transition={{ type: 'tween', duration: 0.3 }}
+                            className="fixed left-0 top-0 h-full w-4/5 max-w-sm bg-white dark:bg-[#1A1D1E] z-[401] flex flex-col shadow-2xl lg:hidden overflow-y-auto"
                         >
-                            <div>
-                                <div className="flex justify-between items-center mb-16">
-                                    <ThemeToggle />
-                                    <button onClick={() => setIsMenuOpen(false)} className="text-brand-charcoal/40 dark:text-brand-cream/40 hover:text-brand-green text-2xl transition-all p-2">
-                                        <FontAwesomeIcon icon={faTimes} />
-                                    </button>
-                                </div>
-
-                                <nav className="flex flex-col gap-6">
-                                    {navItems.map((item, idx) => (
-                                        <motion.div key={item.path} variants={itemVariants}>
-                                            <Link
-                                                to={item.path}
-                                                className="flex items-center gap-6 group"
-                                                onClick={() => setIsMenuOpen(false)}
-                                            >
-                                                <div className="w-12 h-12 rounded-2xl bg-brand-green/5 dark:bg-brand-green/10 flex items-center justify-center text-brand-green text-xl transition-all group-hover:bg-brand-green group-hover:text-white">
-                                                    <FontAwesomeIcon icon={item.icon} />
-                                                </div>
-                                                <span className="text-3xl font-black italic tracking-tighter text-brand-charcoal dark:text-brand-cream group-hover:translate-x-2 transition-transform">
-                                                    {item.label}
-                                                </span>
-                                            </Link>
-                                        </motion.div>
-                                    ))}
-                                </nav>
+                            <div className="p-6 flex justify-between items-center border-b border-gray-100 dark:border-white/10">
+                                <span className="text-2xl font-black italic text-brand-charcoal dark:text-white">Menú</span>
+                                <button onClick={() => setIsMenuOpen(false)} className="text-2xl text-gray-400 hover:text-brand-green">
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </button>
                             </div>
-
-                            <div className="pt-8 border-t border-brand-charcoal/10 dark:border-white/10 flex flex-col gap-6">
-                                <motion.button
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => { setIsLoginOpen(true); setIsMenuOpen(false); }}
-                                    className="flex items-center gap-4 text-brand-charcoal/60 dark:text-brand-cream/60 font-black uppercase tracking-[0.2em] text-[10px]"
-                                >
-                                    <FontAwesomeIcon icon={faUser} />
-                                    Panel de Control
-                                </motion.button>
-                                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/20 dark:text-white/20">LOGO ENERGY • 2026</p>
+                            <div className="flex flex-col py-4">
+                                {navItems.map(item => (
+                                    <Link
+                                        key={item.path}
+                                        to={item.path}
+                                        onClick={() => setIsMenuOpen(false)}
+                                        className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center justify-between"
+                                    >
+                                        {item.label}
+                                    </Link>
+                                ))}
                             </div>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
-
             <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-        </>
+        </header>
     );
 };
 

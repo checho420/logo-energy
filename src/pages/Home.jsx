@@ -4,250 +4,250 @@ import ProductCard from '../components/ProductCard';
 import { useProducts } from '../context/ProductContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faTruck, faUndo, faHeadset, faCreditCard, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
     const { products, loading } = useProducts();
+    const [activeTab, setActiveTab] = useState('featured');
 
-    // Stability of selection
-    const [randomIds, setRandomIds] = useState([]);
-    const [promoIds, setPromoIds] = useState([]);
+    // Random subsets for generic product blocks
+    const [featuredIds, setFeaturedIds] = useState([]);
+    const [latestIds, setLatestIds] = useState([]);
 
     useEffect(() => {
         if (products.length > 0) {
-            // Selected random products for main section
-            const availableProducts = products.filter(p => !p.disabled);
-            if (randomIds.length === 0) {
-                const limit = Math.min(availableProducts.length, 8);
-                const ids = [...availableProducts]
-                    .sort(() => Math.random() - 0.5)
-                    .slice(0, limit)
-                    .map(p => p.id);
-                setRandomIds(ids);
+            const available = products.filter(p => !p.disabled);
+            
+            if (featuredIds.length === 0) {
+                setFeaturedIds([...available].sort(() => 0.5 - Math.random()).slice(0, 4).map(p => p.id));
             }
-
-            // Products on promotion
-            const promoProducts = products.filter(p => !p.disabled && p.promotion);
-            if (promoIds.length < 4 && promoProducts.length > promoIds.length) {
-                const limit = Math.min(promoProducts.length, 4);
-                const pIds = [...promoProducts]
-                    .sort(() => Math.random() - 0.5)
-                    .slice(0, limit)
-                    .map(p => p.id);
-                setPromoIds(pIds);
+            if (latestIds.length === 0) {
+                setLatestIds([...available].reverse().slice(0, 4).map(p => p.id));
             }
         }
-    }, [products, randomIds.length, promoIds.length]);
+    }, [products, featuredIds.length, latestIds.length]);
 
-    const displayProducts = useMemo(() => {
-        return randomIds
-            .map(id => products.find(p => p.id === id))
-            .filter(Boolean);
-    }, [randomIds, products]);
+    const featuredProducts = featuredIds.map(id => products.find(p => p.id === id)).filter(Boolean);
+    const latestProducts = latestIds.map(id => products.find(p => p.id === id)).filter(Boolean);
 
-    const promoProductsList = useMemo(() => {
-        return promoIds
-            .map(id => products.find(p => p.id === id))
-            .filter(Boolean);
-    }, [promoIds, products]);
-
-    // Slider state for dynamic promo banners
-    const [bannerIndex, setBannerIndex] = useState(0);
-    const promoBanners = useMemo(() => [
-        {
-            mobile: 'assets/banners/banner-sabias-mobile.jpg',
-            desktop: 'assets/banners/banner-sabias-desktop.jpg',
-            alt: 'Promo Sabías Que?'
-        },
-        {
-            mobile: 'assets/banners/banner-logo-mobile.jpg',
-            desktop: 'assets/banners/banner-logo-desktop.jpg',
-            alt: 'Promo Logo Energy'
-        },
-        {
-            mobile: 'assets/banners/banner-luminaria-mobile.jpg',
-            desktop: 'assets/banners/banner-luminaria-desktop.jpg',
-            alt: 'Promo Luminaria'
-        }
-    ], []);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setBannerIndex((prev) => (prev + 1) % promoBanners.length);
-        }, 6000);
-        return () => clearInterval(timer);
-    }, [promoBanners.length]);
+    const currentTabProducts = activeTab === 'featured' ? featuredProducts : latestProducts;
 
     return (
-        <div className="bg-brand-cream dark:bg-brand-charcoal overflow-x-hidden transition-colors duration-1000">
+        <div className="bg-white dark:bg-[#1A1D1E] overflow-x-hidden min-h-screen">
             <Hero />
 
-            {/* Dynamic Promo Banner Slider - Aligned with Content Margins */}
-            <div className="container mx-auto px-6 my-8 md:my-12">
-                <section className="w-full bg-brand-cream dark:bg-brand-charcoal overflow-hidden relative border border-brand-charcoal/5 dark:border-white/5 aspect-[4/5] sm:aspect-video md:aspect-[21/9] min-h-[350px] md:min-h-[450px] rounded-[2rem] transition-colors duration-700 shadow-sm">
-                    <AnimatePresence initial={false}>
-                        <motion.div
-                            key={bannerIndex}
-                            initial={{ opacity: 0, scale: 1.02 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.98 }}
-                            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                            className="absolute inset-0 w-full h-full flex items-center justify-center"
-                        >
-                            <picture className="w-full h-full">
-                                <source media="(max-width: 768px)" srcSet={promoBanners[bannerIndex].mobile} />
-                                <img
-                                    src={promoBanners[bannerIndex].desktop}
-                                    alt={promoBanners[bannerIndex].alt}
-                                    className="w-full h-full object-contain transition-all duration-700"
-                                />
-                            </picture>
-                        </motion.div>
-                    </AnimatePresence>
-                    
-                    {/* Navigation Dots - Dynamic Contrast */}
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-                        {promoBanners.map((_, idx) => (
-                            <div 
-                                key={idx}
-                                className={`h-[3px] transition-all duration-700 rounded-full ${idx === bannerIndex ? 'w-10 bg-brand-green' : 'w-2 bg-white/20 dark:bg-white/10'}`}
-                            />
-                        ))}
+            {/* Features Row - After Hero */}
+            <div className="container mx-auto px-6 py-10 border-b border-gray-100 dark:border-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-white/5">
+                    <div className="flex flex-col items-center justify-center p-4">
+                        <FontAwesomeIcon icon={faTruck} className="text-3xl lg:text-4xl text-brand-charcoal/20 dark:text-brand-cream/20 mb-4" />
+                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest">Envío Gratis & Devoluciones</h4>
+                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">Por órdenes de más de $200.000</p>
                     </div>
-                </section>
+                    <div className="flex flex-col items-center justify-center p-4">
+                        <FontAwesomeIcon icon={faUndo} className="text-3xl lg:text-4xl text-brand-charcoal/20 dark:text-brand-cream/20 mb-4" />
+                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest">Garantía de Devolución</h4>
+                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">100% de garantía de fábrica</p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center p-4">
+                        <FontAwesomeIcon icon={faHeadset} className="text-3xl lg:text-4xl text-brand-charcoal/20 dark:text-brand-cream/20 mb-4" />
+                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest">Soporte Online 24/7</h4>
+                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">Estamos para ti siempre</p>
+                    </div>
+                </div>
             </div>
 
-            {/* Promociones Section */}
-            <section className="relative py-16 md:py-24 overflow-hidden bg-brand-charcoal/[0.02] dark:bg-white/[0.01]">
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-12 relative z-10">
-                        <div className="max-w-2xl">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="flex items-center gap-4 mb-8"
-                            >
-                                <div className="h-[1px] w-12 bg-brand-red/30" />
-                                <span className="text-brand-red font-black tracking-[0.5em] uppercase text-[10px]">
-                                    Oportunidades Únicas
-                                </span>
-                            </motion.div>
-                            <h2 className="text-6xl md:text-8xl font-black tracking-tightest leading-[0.85] text-brand-charcoal dark:text-brand-cream">
-                                <motion.span
-                                    initial={{ opacity: 0, x: -30 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 }}
-                                    className="block"
-                                >
-                                    en
-                                </motion.span>
-                                <motion.span
-                                    initial={{ opacity: 0, x: -30 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4 }}
-                                    className="block text-brand-red italic font-light mt-2"
-                                >
-                                    promoción
-                                </motion.span>
-                            </h2>
+            {/* Top Categories/Promos (3 Big Cards) */}
+            <div className="container mx-auto px-6 py-16">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Promo Card 1 */}
+                    <div className="bg-gray-50 dark:bg-black/20 rounded-xl overflow-hidden group flex flex-col items-center p-8 relative">
+                        <img src="assets/products/luminary-front-300.jpg" alt="Luminaria" className="h-48 object-contain mb-8 group-hover:scale-110 transition-transform duration-700" />
+                        <div className="bg-brand-charcoal dark:bg-black text-white w-full rounded-b-xl absolute bottom-0 left-0 p-6 text-center border-t-4 border-brand-green">
+                            <p className="text-[10px] uppercase tracking-widest text-brand-green font-bold">Ahorra hasta</p>
+                            <h3 className="text-3xl font-black italic">$100.000</h3>
+                            <p className="text-xs mt-1 opacity-80">en Luminarias Solares</p>
                         </div>
-                        <Link to="/sale" className="group flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest border border-brand-charcoal/10 dark:border-white/10 px-10 py-6 rounded-full hover:bg-brand-red hover:border-brand-red hover:text-white transition-all duration-500">
-                            Ver Todas las Ofertas
-                            <FontAwesomeIcon icon={faArrowRight} className="group-hover:translate-x-2 transition-transform" />
-                        </Link>
                     </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {loading ? (
-                            [1, 2, 3, 4].map(i => <div key={i} className="aspect-[3/4] bg-brand-charcoal/5 dark:bg-brand-cream/5 rounded-[2rem] animate-pulse"></div>)
-                        ) : (
-                            promoProductsList.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))
-                        )}
+                    {/* Promo Card 2 */}
+                    <div className="bg-gray-50 dark:bg-black/20 rounded-xl overflow-hidden group flex flex-col items-center p-8 relative">
+                        <img src="assets/products/estacion-frente.jpg" alt="Estacion" className="h-48 object-contain mb-8 group-hover:scale-110 transition-transform duration-700" />
+                        <div className="bg-brand-charcoal dark:bg-black text-white w-full rounded-b-xl absolute bottom-0 left-0 p-6 text-center border-t-4 border-brand-green">
+                            <p className="text-[10px] uppercase tracking-widest text-brand-green font-bold">Ahorra hasta</p>
+                            <h3 className="text-3xl font-black italic">$300.000</h3>
+                            <p className="text-xs mt-1 opacity-80">en Estaciones de Energía</p>
+                        </div>
+                    </div>
+                    {/* Promo Card 3 */}
+                    <div className="bg-gray-50 dark:bg-black/20 rounded-xl overflow-hidden group flex flex-col items-center p-8 relative">
+                        <img src="assets/products/battery-front.jpg" alt="Bateria" className="h-48 object-contain mb-8 group-hover:scale-110 transition-transform duration-700" />
+                        <div className="bg-brand-charcoal dark:bg-black text-white w-full rounded-b-xl absolute bottom-0 left-0 p-6 text-center border-t-4 border-brand-green">
+                            <p className="text-[10px] uppercase tracking-widest text-brand-green font-bold">Ahorra hasta</p>
+                            <h3 className="text-3xl font-black italic">$50.000</h3>
+                            <p className="text-xs mt-1 opacity-80">en Power Banks Elite</p>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <section className="relative py-16 md:py-24 overflow-hidden">
-                <div className="container mx-auto px-6 relative z-10">
-                    {/* Decorative background element for the section */}
-                    <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-brand-green/5 rounded-full blur-[120px] pointer-events-none" />
+            {/* Products Tabs Section */}
+            <div className="container mx-auto px-6 py-10">
+                <div className="flex justify-center md:justify-start gap-8 border-b-2 border-gray-100 dark:border-white/10 mb-10 pb-2">
+                    <button 
+                        onClick={() => setActiveTab('featured')}
+                        className={`text-sm font-black uppercase tracking-widest transition-colors relative ${activeTab === 'featured' ? 'text-brand-green' : 'text-gray-400 hover:text-brand-charcoal dark:hover:text-brand-cream'}`}
+                    >
+                        Productos Destacados
+                        {activeTab === 'featured' && <div className="absolute -bottom-[10px] left-0 w-full h-[2px] bg-brand-green" />}
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('latest')}
+                        className={`text-sm font-black uppercase tracking-widest transition-colors relative ${activeTab === 'latest' ? 'text-brand-green' : 'text-gray-400 hover:text-brand-charcoal dark:hover:text-brand-cream'}`}
+                    >
+                        Nuevos Lanzamientos
+                        {activeTab === 'latest' && <div className="absolute -bottom-[10px] left-0 w-full h-[2px] bg-brand-green" />}
+                    </button>
+                </div>
 
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-12 relative z-10">
-                        <div className="max-w-2xl">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="flex items-center gap-4 mb-8"
-                            >
-                                <div className="h-[1px] w-12 bg-brand-green/30" />
-                                <span className="text-brand-green font-black tracking-[0.5em] uppercase text-[10px]">
-                                    Catálogo Curado • Edición 2026
-                                </span>
-                            </motion.div>
-
-                            <h2 className="text-6xl md:text-8xl font-black tracking-tightest leading-[0.85] text-brand-charcoal dark:text-brand-cream">
-                                <motion.span
-                                    initial={{ opacity: 0, x: -30 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.2 }}
-                                    className="block"
-                                >
-                                    nuestra
-                                </motion.span>
-                                <motion.span
-                                    initial={{ opacity: 0, x: -30 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.4 }}
-                                    className="block text-brand-green italic font-light mt-2"
-                                >
-                                    tienda
-                                </motion.span>
-                            </h2>
-                        </div>
-                        <Link to="/catalog" className="group flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest border border-brand-charcoal/10 dark:border-white/10 px-10 py-6 rounded-full hover:bg-brand-green hover:border-brand-green hover:text-white transition-all duration-500">
-                            Ver Selección Completa
-                            <FontAwesomeIcon icon={faArrowRight} className="group-hover:translate-x-2 transition-transform" />
-                        </Link>
-                    </div>
-
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {loading ? (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            {[1, 2, 3].map(i => <div key={i} className="aspect-[3/4] bg-brand-charcoal/5 dark:bg-brand-cream/  5 rounded-[2rem] animate-pulse"></div>)}
-                        </div>
+                        [1, 2, 3, 4].map(i => <div key={i} className="aspect-[3/4] bg-gray-100 dark:bg-white/5 rounded-2xl animate-pulse"></div>)
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            {displayProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
+                        currentTabProducts.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))
                     )}
                 </div>
-            </section>
+            </div>
 
-            <section className="py-20 md:py-32 bg-brand-charcoal overflow-hidden">
-                <div className="container mx-auto px-6 text-center h-full">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="max-w-5xl mx-auto flex flex-col items-center gap-10"
-                    >
-                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-green">Membresía Energy Elite</span>
-                        <h2 className="text-6xl md:text-8xl font-black tracking-tightest text-brand-cream leading-[0.85] italic">
-                            El futuro no se espera, <br /> se diseña.
-                        </h2>
-                        <button className="bg-brand-cream text-brand-charcoal px-12 py-6 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-brand-green hover:text-white transition-all shadow-2xl mt-8">
-                            Unirse al Programa
-                        </button>
-                    </motion.div>
+            {/* Info Circles Section */}
+            <div className="container mx-auto px-6 py-20 my-10 border-t border-b border-gray-100 dark:border-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                    <div className="flex flex-col items-center">
+                        <div className="w-20 h-20 rounded-full border-2 border-brand-green flex items-center justify-center mb-6 text-brand-green">
+                            <FontAwesomeIcon icon={faHeadset} className="text-2xl" />
+                        </div>
+                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest mb-4">Atención al Cliente</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed max-w-xs mx-auto">
+                            Resolvemos tus dudas al instante. Soporte técnico dedicado para la instalación y mantenimiento de tus equipos.
+                        </p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <div className="w-20 h-20 rounded-full border-2 border-brand-green flex items-center justify-center mb-6 text-brand-green">
+                            <FontAwesomeIcon icon={faCreditCard} className="text-2xl" />
+                        </div>
+                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest mb-4">Pago Seguro</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed max-w-xs mx-auto">
+                            Tus transacciones están protegidas con encriptación de grado militar. Aceptamos múltiples métodos de pago.
+                        </p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <div className="w-20 h-20 rounded-full border-2 border-brand-green flex items-center justify-center mb-6 text-brand-green">
+                            <FontAwesomeIcon icon={faSyncAlt} className="text-2xl" />
+                        </div>
+                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest mb-4">Devoluciones Fáciles</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed max-w-xs mx-auto">
+                            Si no estás satisfecho con tu ecosistema energético, tienes un plan de retorno garantizado y sin complicaciones.
+                        </p>
+                    </div>
                 </div>
-            </section>
+            </div>
+
+            {/* Big Promo Banner Section (Top Electronic Deals) */}
+            <div className="w-full bg-gray-50 dark:bg-[#151718] py-20 px-6">
+                <div className="container mx-auto flex flex-col md:flex-row items-center justify-center gap-12">
+                    <div className="flex flex-col items-center md:items-end text-center md:text-right">
+                        <h2 className="text-3xl md:text-5xl font-black text-brand-charcoal dark:text-brand-cream tracking-tighter uppercase mb-4">
+                            Súper Ofertas<br />Energéticas
+                        </h2>
+                    </div>
+                    <div className="bg-brand-green text-white px-8 py-3 rounded-none font-black text-2xl uppercase tracking-widest">
+                        Mega Sale
+                    </div>
+                    <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                        <div className="flex items-center gap-2">
+                            <span className="bg-brand-charcoal text-white px-2 py-1 text-[10px] font-black uppercase">Exclusivo</span>
+                            <span className="text-brand-charcoal dark:text-white font-black text-lg">CUPÓN OFF</span>
+                        </div>
+                        <span className="text-5xl font-black text-brand-red tracking-tighter italic mt-2">-$150k</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="w-full h-1 bg-brand-charcoal/5 dark:bg-white/5" />
+
+            {/* Bottom 3 Columns (Small Product Lists) */}
+            <div className="container mx-auto px-6 py-24 border-t border-gray-100 dark:border-white/5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24">
+                    {/* Col 1 */}
+                    <div>
+                        <h5 className="font-black text-brand-charcoal dark:text-white text-sm uppercase tracking-widest border-b border-gray-100 dark:border-white/10 pb-4 mb-8">Puntuación Élite</h5>
+                        <div className="flex flex-col gap-6">
+                            {featuredProducts.slice(0, 3).map(p => (
+                                <Link to={`/product/${p.id}`} key={p.id} className="flex gap-4 group">
+                                    <div className="w-20 h-20 bg-gray-50 dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
+                                        <img src={p.images?.[0]} alt={p.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex flex-col justify-center">
+                                        <p className="text-[10px] font-bold text-gray-400 group-hover:text-brand-green transition-colors uppercase line-clamp-2">{p.name}</p>
+                                        <div className="flex items-center gap-1 mt-1 text-[9px] text-brand-green">
+                                            ★★★★<span className="text-gray-300">★</span>
+                                        </div>
+                                        <span className="text-sm font-black text-brand-charcoal dark:text-white mt-2">${(p.price).toLocaleString('es-CO')}</span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Col 2 */}
+                    <div>
+                        <h5 className="font-black text-brand-charcoal dark:text-white text-sm uppercase tracking-widest border-b border-gray-100 dark:border-white/10 pb-4 mb-8">Los Más Pro</h5>
+                        <div className="flex flex-col gap-6">
+                            {latestProducts.slice(0, 3).map(p => (
+                                <Link to={`/product/${p.id}`} key={p.id} className="flex gap-4 group">
+                                    <div className="w-20 h-20 bg-gray-50 dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
+                                        <img src={p.images?.[0]} alt={p.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex flex-col justify-center">
+                                        <p className="text-[10px] font-bold text-gray-400 group-hover:text-brand-green transition-colors uppercase line-clamp-2">{p.name}</p>
+                                        <div className="flex items-center gap-1 mt-1 text-[9px] text-brand-green">
+                                            ★★★★★
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            {p.promotion && <span className="text-[10px] text-gray-400 line-through">${(p.price * 1.15).toLocaleString('es-CO')}</span>}
+                                            <span className="text-sm font-black text-brand-charcoal dark:text-white">${(p.price).toLocaleString('es-CO')}</span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Col 3 */}
+                    <div>
+                        <h5 className="font-black text-brand-charcoal dark:text-white text-sm uppercase tracking-widest border-b border-gray-100 dark:border-white/10 pb-4 mb-8">Novedades</h5>
+                        <div className="flex flex-col gap-6">
+                            {featuredProducts.slice(0, 3).reverse().map(p => (
+                                <Link to={`/product/${p.id}`} key={p.id} className="flex gap-4 group">
+                                    <div className="w-20 h-20 bg-gray-50 dark:bg-black/20 rounded-xl overflow-hidden p-2 flex-shrink-0">
+                                        <img src={p.images?.[p.images.length > 1 ? 1 : 0]} alt={p.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex flex-col justify-center">
+                                        <p className="text-[10px] font-bold text-gray-400 group-hover:text-brand-green transition-colors uppercase line-clamp-2">{p.name}</p>
+                                        <div className="flex items-center gap-1 mt-1 text-[9px] text-brand-green">
+                                            ★★★★★
+                                        </div>
+                                        <span className="text-sm font-black text-brand-charcoal dark:text-white mt-2">${(p.price).toLocaleString('es-CO')}</span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* WhatsApp Floating */}
             <motion.a
@@ -256,7 +256,7 @@ const Home = () => {
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="fixed bottom-10 right-10 bg-brand-green text-brand-cream h-16 w-16 rounded-full flex items-center justify-center shadow-2xl z-50 transition-colors"
+                className="fixed bottom-10 right-10 bg-brand-green text-white h-16 w-16 rounded-full flex items-center justify-center shadow-2xl z-50 transition-colors"
             >
                 <FontAwesomeIcon icon={faWhatsapp} className="text-3xl" />
             </motion.a>
