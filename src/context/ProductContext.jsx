@@ -33,7 +33,7 @@ export const ProductProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const STORAGE_KEY = 'logo_energy_products_v9';
+    const STORAGE_KEY = 'logo_energy_products_v10';
 
     // Initial Load
     useEffect(() => {

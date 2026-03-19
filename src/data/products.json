@@ -8,7 +8,12 @@
         "stock": 50,
         "description": "",
         "images": [
-            "assets/products/luminaria.png"
+            "assets/products/luminary-front-300.jpg",
+            "assets/products/luminary-side-300.jpg",
+            "assets/products/luminary-back-300.jpg",
+            "assets/products/luminary-control-300.jpg",
+            "assets/products/luminary-iron-300.jpg",
+            "assets/products/luminary-panel-300.jpg"
         ],
         "promotion": true,
         "discountPercentage": 15,
@@ -26,7 +31,11 @@
         "stock": 30,
         "description": "Checho",
         "images": [
-            "assets/products/ventilador.png"
+            "assets/products/fan-front.png",
+            "assets/products/fan-back.png",
+            "assets/products/fan-front-in.png",
+            "assets/products/fan-side.png",
+            "assets/products/fan-tools.png"
         ],
         "promotion": false,
         "discountPercentage": 0,
@@ -37,14 +46,21 @@
     },
     {
         "id": 3,
-        "name": "Generador Solar Portátil 1000Wh",
+        "name": "Estacion de energia solar",
         "brand": "EcoFlow",
         "category": "Generadores",
         "price": 4199900,
         "stock": 25,
         "description": "Checho",
         "images": [
-            "assets/products/generador.png"
+            "assets/products/estacion-frente.jpg",
+            "assets/products/estacion-cables.jpg",
+            "assets/products/estacion-controles.jpg",
+            "assets/products/estacion-lado.jpg",
+            "assets/products/estacion-luz.jpg",
+            "assets/products/estacion-panel.jpg",
+            "assets/products/estacion-panel-back.jpg",
+            "assets/products/estacion-tornillos.jpg"
         ],
         "promotion": true,
         "discountPercentage": 15,
@@ -55,14 +71,16 @@
     },
     {
         "id": 4,
-        "name": "Batería de Gel de Ciclo Profundo 200Ah",
-        "brand": "PowerCell",
+        "name": "Power Bank Blanca",
+        "brand": "Unitec",
         "category": "Baterías",
         "price": 1280000,
         "stock": 100,
         "description": "",
         "images": [
-            "assets/products/bateria.png"
+            "assets/products/battery-front.jpg",
+            "assets/products/battery-back.jpg",
+            "assets/products/battery-tools.jpg"
         ],
         "promotion": true,
         "discountPercentage": 10,
@@ -73,14 +91,17 @@
     },
     {
         "id": 5,
-        "name": "Pack de Luces Solares para Jardín",
+        "name": "Lampara Solar 2 Bombillos",
         "brand": "LumiSolar",
         "category": "Iluminación",
         "price": 185000,
         "stock": 200,
         "description": "Juego",
         "images": [
-            "assets/products/luces.png"
+            "assets/products/lamp-front-2.jpg",
+            "assets/products/lamp-down-2.jpg",
+            "assets/products/lamp-side-2.jpg",
+            "assets/products/lamp-up-2.jpg"
         ],
         "promotion": true,
         "discountPercentage": 15,
