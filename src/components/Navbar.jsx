@@ -7,7 +7,7 @@ import LoginModal from './LoginModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faSearch, faUser, faShoppingCart, faBars, faTimes,
-    faHome, faStore, faCrown, faTag, faPhoneVolume
+    faHome, faStore, faCrown, faTag, faPhoneVolume, faSun, faMoon
 } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -73,22 +73,8 @@ const Navbar = () => {
 
             {/* Middle White Bar */}
             <div className="container mx-auto px-6 py-6 flex justify-between items-center gap-4">
-                {/* Search */}
-                <div className="hidden md:flex flex-1">
-                    <div className="relative w-full max-w-sm">
-                        <input
-                            type="text"
-                            placeholder="Buscar..."
-                            className="w-full bg-gray-100 dark:bg-black/20 text-brand-charcoal dark:text-brand-cream rounded-full py-3 px-6 text-sm outline-none border border-transparent focus:border-brand-green transition-colors"
-                        />
-                        <button className="absolute right-0 top-0 h-full px-6 flex items-center justify-center text-brand-charcoal/40 hover:text-brand-green">
-                            <FontAwesomeIcon icon={faSearch} />
-                        </button>
-                    </div>
-                </div>
-
                 {/* Logo */}
-                <div className="flex-1 flex justify-start md:justify-center">
+                <div className="flex justify-start">
                     <Link to="/" className="text-3xl lg:text-4xl font-black uppercase tracking-tighter text-brand-charcoal dark:text-brand-cream flex items-center gap-2 group">
                         LOGO<span className="text-brand-green italic group-hover:scale-105 transition-transform">Energy</span>
                     </Link>
@@ -105,6 +91,9 @@ const Navbar = () => {
                     </div>
                     
                     <div className="flex items-center gap-6 text-brand-charcoal dark:text-brand-cream">
+                        <button onClick={toggleTheme} className="hover:text-brand-green transition-colors hidden md:block">
+                            <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} className="text-xl" />
+                        </button>
                         <button onClick={() => setIsLoginOpen(true)} className="hover:text-brand-green transition-colors hidden md:block">
                             <FontAwesomeIcon icon={faUser} className="text-xl" />
                         </button>
@@ -161,9 +150,14 @@ const Navbar = () => {
                         >
                             <div className="p-6 flex justify-between items-center border-b border-gray-100 dark:border-white/10">
                                 <span className="text-2xl font-black italic text-brand-charcoal dark:text-white">Menú</span>
-                                <button onClick={() => setIsMenuOpen(false)} className="text-2xl text-gray-400 hover:text-brand-green">
-                                    <FontAwesomeIcon icon={faTimes} />
-                                </button>
+                                <div className="flex items-center gap-6">
+                                    <button onClick={toggleTheme} className="text-2xl text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-colors">
+                                        <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
+                                    </button>
+                                    <button onClick={() => setIsMenuOpen(false)} className="text-2xl text-gray-400 hover:text-brand-green">
+                                        <FontAwesomeIcon icon={faTimes} />
+                                    </button>
+                                </div>
                             </div>
                             <div className="flex flex-col py-4">
                                 {navItems.map(item => (
