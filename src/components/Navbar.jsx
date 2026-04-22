@@ -37,12 +37,7 @@ const Navbar = () => {
         : [
             { label: 'Inicio', path: '/' },
             { label: 'Categorías', path: '/catalog' },
-            { label: 'Productos', path: '/bestsellers' },
-            { label: 'Características', path: '/features' },
-            { label: 'Blog', path: '/blog' },
-            { label: 'Elementos', path: '/elements' },
-            { label: 'Ofertas Especiales', path: '/sale' },
-            { label: 'Comprar Pro', path: '/buy' }
+            { label: 'Ofertas Especiales', path: '/catalog' }
         ];
 
     return (
@@ -89,7 +84,7 @@ const Navbar = () => {
                             <span className="font-black text-brand-charcoal dark:text-brand-cream text-lg leading-none">+123 5678 890</span>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-6 text-brand-charcoal dark:text-brand-cream">
                         <button onClick={toggleTheme} className="hover:text-brand-green transition-colors hidden md:block">
                             <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} className="text-xl" />
