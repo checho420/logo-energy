@@ -12,27 +12,29 @@ const NotFound = () => {
         <div className="min-h-screen bg-brand-cream dark:bg-brand-charcoal flex flex-col items-center justify-center p-6 text-center">
             <div className="container max-w-4xl mx-auto flex flex-col items-center">
                 {/* Animated Image Container */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative w-full max-w-lg aspect-square mb-8 group"
-                >
-                    {/* Minimalist aura */}
-
-
-                    <img
+                <div className="relative w-full max-w-lg aspect-square mb-8 group">
+                    <motion.img
                         src={robotLight}
                         alt="Robot 404 Light"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                         className="absolute inset-0 z-10 w-full h-full object-contain mix-blend-multiply dark:opacity-0 transition-opacity duration-500 p-4 transform group-hover:scale-105"
+                        style={{ 
+                            WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)',
+                            maskImage: 'radial-gradient(circle at center, black 40%, transparent 80%)'
+                        }}
                     />
 
-                    <img
+                    <motion.img
                         src={robotDark}
                         alt="Robot 404 Dark"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                         className="absolute inset-0 z-10 w-full h-full object-contain mix-blend-screen opacity-0 dark:opacity-100 transition-opacity duration-500 p-4 transform group-hover:scale-105"
                     />
-                </motion.div>
+                </div>
 
                 {/* Text Content */}
                 <motion.div
