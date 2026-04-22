@@ -37,8 +37,14 @@ const CartSidebar = () => {
                                 <h2 className="text-3xl font-black text-brand-charcoal dark:text-brand-cream italic tracking-tighter">Tu Carrito</h2>
                                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-charcoal/30 dark:text-brand-cream/30 mt-1">Lujo Sostenible</p>
                             </div>
-                            <button onClick={toggleCart} className="w-12 h-12 flex items-center justify-center bg-brand-charcoal/5 dark:bg-brand-cream/5 rounded-full text-brand-charcoal dark:text-brand-cream hover:bg-brand-green hover:text-brand-cream transition-all active:scale-95 shadow-inner">
-                                <FontAwesomeIcon icon={faTimes} />
+                            <button 
+                                onClick={toggleCart} 
+                                className="group p-2 transition-all outline-none"
+                            >
+                                <FontAwesomeIcon 
+                                    icon={faTimes} 
+                                    className="text-2xl text-gray-400 dark:text-gray-500 transition-all duration-300 transform group-hover:text-[#D31A20] group-hover:scale-125 group-hover:rotate-90"
+                                />
                             </button>
                         </div>
 
