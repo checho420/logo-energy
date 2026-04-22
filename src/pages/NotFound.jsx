@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSun } from '@fortawesome/free-solid-svg-icons';
 
+import robotLight from '../assets/ui/robot-404-light.png';
+import robotDark from '../assets/ui/robot-404-dark.png';
+
 const NotFound = () => {
     return (
         <div className="min-h-screen bg-brand-cream dark:bg-brand-charcoal flex flex-col items-center justify-center p-6 text-center">
@@ -16,16 +19,16 @@ const NotFound = () => {
                     className="relative w-full max-w-lg aspect-square mb-8 group"
                 >
                     {/* Minimalist aura */}
-                    <div className="absolute inset-0 bg-brand-green/5 rounded-full blur-[120px] group-hover:bg-brand-green/10 transition-colors duration-1000" />
+
 
                     <img
-                        src="/assets/ui/robot-404-light.png"
+                        src={robotLight}
                         alt="Robot 404 Light"
                         className="absolute inset-0 z-10 w-full h-full object-contain mix-blend-multiply dark:opacity-0 transition-opacity duration-500 p-4 transform group-hover:scale-105"
                     />
 
                     <img
-                        src="/assets/ui/robot-404-dark.png"
+                        src={robotDark}
                         alt="Robot 404 Dark"
                         className="absolute inset-0 z-10 w-full h-full object-contain mix-blend-screen opacity-0 dark:opacity-100 transition-opacity duration-500 p-4 transform group-hover:scale-105"
                     />
