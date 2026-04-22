@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../utils/formatters';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faShoppingBag, faArrowRight, faPrint, faEnvelope, faTimes, faCreditCard, faLock, faShieldAlt, faSpinner, faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faShoppingBag, faTrash, faArrowRight, faPrint, faEnvelope, faTimes, faCreditCard, faLock, faShieldAlt, faSpinner, faBuildingColumns } from '@fortawesome/free-solid-svg-icons';
 
 const Checkout = () => {
     const { cart, total, clearCart, updateQuantity, removeFromCart } = useCart();
@@ -301,10 +301,13 @@ const Checkout = () => {
                                         />
                                         <button
                                             onClick={() => removeFromCart(item.id)}
-                                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                            className="absolute -top-2 -right-2 p-1 transition-all outline-none z-20 md:opacity-0 md:group-hover:opacity-100 group/close"
                                             title="Eliminar producto"
                                         >
-                                            <FontAwesomeIcon icon={faTimes} className="text-[10px]" />
+                                            <FontAwesomeIcon 
+                                                icon={faTimes} 
+                                                className="text-xl text-gray-400 dark:text-gray-500 transition-all duration-300 transform group-hover/close:text-[#D31A20] group-hover/close:scale-125 group-hover/close:rotate-90"
+                                            />
                                         </button>
                                     </div>
                                     <div className="flex-grow">
