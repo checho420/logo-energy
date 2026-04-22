@@ -18,8 +18,17 @@ const Navbar = () => {
     const { user, isAuthenticated, logout } = useAuth();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         setIsMenuOpen(false);
@@ -41,7 +50,12 @@ const Navbar = () => {
         ];
 
     return (
-        <header className="w-full bg-white dark:bg-[#1A1D1E] relative z-50 shadow-sm">
+        <>
+        <header className={`w-full sticky top-0 z-50 transition-all duration-300 ${
+            scrolled 
+                ? 'bg-white/70 dark:bg-[#1A1D1E]/70 backdrop-blur-md shadow-md py-0' 
+                : 'bg-white dark:bg-[#1A1D1E] shadow-sm py-2'
+        }`}>
             {/* Top Green Bar */}
             <div className="bg-brand-green text-white py-2 px-6 flex justify-between items-center text-[10px] md:text-xs">
                 <div className="hidden md:flex gap-4 font-semibold opacity-90">
@@ -103,15 +117,15 @@ const Navbar = () => {
                                 </span>
                             </div>
                         </button>
-                        <button onClick={() => setIsMenuOpen(true)} className="lg:hidden text-2xl hover:text-brand-green">
+                        <button onClick={() => setIsMenuOpen(true)} className="text-2xl hover:text-brand-green ml-2">
                             <FontAwesomeIcon icon={faBars} />
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Nav Menu */}
-            <div className="hidden lg:flex border-t border-brand-charcoal/5 dark:border-white/5 bg-white dark:bg-[#1A1D1E]">
+            {/* Bottom Nav Menu - Hidden as per request for unified hamburger experience */}
+            <div className="hidden border-t border-brand-charcoal/5 dark:border-white/5 bg-transparent">
                 <nav className="container mx-auto px-6 flex justify-center space-x-10 py-4">
                     {navItems.map(item => (
                         <Link
@@ -125,53 +139,61 @@ const Navbar = () => {
                 </nav>
             </div>
 
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isMenuOpen && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsMenuOpen(false)}
-                            className="fixed inset-0 bg-black/50 z-[400] lg:hidden"
-                        />
-                        <motion.div
-                            initial={{ x: '-100%' }}
-                            animate={{ x: 0 }}
-                            exit={{ x: '-100%' }}
-                            transition={{ type: 'tween', duration: 0.3 }}
-                            className="fixed left-0 top-0 h-full w-4/5 max-w-sm bg-white dark:bg-[#1A1D1E] z-[401] flex flex-col shadow-2xl lg:hidden overflow-y-auto"
-                        >
-                            <div className="p-6 flex justify-between items-center border-b border-gray-100 dark:border-white/10">
-                                <span className="text-2xl font-black italic text-brand-charcoal dark:text-white">Menú</span>
-                                <div className="flex items-center gap-6">
-                                    <button onClick={toggleTheme} className="text-2xl text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-colors">
-                                        <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
-                                    </button>
-                                    <button onClick={() => setIsMenuOpen(false)} className="text-2xl text-gray-400 hover:text-brand-green">
-                                        <FontAwesomeIcon icon={faTimes} />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex flex-col py-4">
-                                {navItems.map(item => (
-                                    <Link
-                                        key={item.path}
-                                        to={item.path}
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center justify-between"
-                                    >
-                                        {item.label}
-                                    </Link>
-                                ))}
-                            </div>
-                        </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
             <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
         </header>
+
+        {/* Mobile Menu - Moved outside header to avoid stacking context issues */}
+        <AnimatePresence>
+            {isMenuOpen && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsMenuOpen(false)}
+                        className="fixed inset-0 bg-black/50 z-[400]"
+                    />
+                    <motion.div
+                        initial={{ x: '-100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '-100%' }}
+                        transition={{ type: 'tween', duration: 0.3 }}
+                        className="fixed left-0 top-0 h-full w-4/5 max-w-sm bg-white/70 dark:bg-[#1A1D1E]/70 backdrop-blur-xl z-[401] flex flex-col shadow-2xl overflow-y-auto"
+                    >
+                        <div className="p-6 flex justify-between items-center border-b border-gray-100 dark:border-white/10">
+                            <span className="text-2xl font-black italic text-brand-charcoal dark:text-white">Menú</span>
+                            <div className="flex items-center gap-6">
+                                <button onClick={toggleTheme} className="text-2xl text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-colors">
+                                    <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
+                                </button>
+                                <button 
+                                    onClick={() => setIsMenuOpen(false)} 
+                                    className="group p-2 transition-all outline-none"
+                                >
+                                    <FontAwesomeIcon 
+                                        icon={faTimes} 
+                                        className="text-2xl text-gray-400 dark:text-gray-500 transition-all duration-300 transform group-hover:text-[#D31A20] group-hover:scale-125 group-hover:rotate-90"
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-col py-4">
+                            {navItems.map(item => (
+                                <Link
+                                    key={item.path}
+                                    to={item.path}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center justify-between"
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
+        </>
     );
 };
 
