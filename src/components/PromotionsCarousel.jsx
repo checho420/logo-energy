@@ -76,13 +76,13 @@ const PromotionsCarousel = ({ title, subLabel, promos = [] }) => {
                     <h2 className="text-4xl md:text-5xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter italic">{title}</h2>
                 </div>
                 <div className="flex gap-2">
-                    <button 
+                    <button
                         onClick={prev}
                         className="w-14 h-14 rounded-full border border-brand-charcoal/10 dark:border-brand-cream/10 flex items-center justify-center text-brand-charcoal dark:text-brand-cream hover:bg-brand-charcoal hover:text-white dark:hover:bg-brand-cream dark:hover:text-brand-charcoal transition-all duration-500"
                     >
                         <FontAwesomeIcon icon={faChevronLeft} />
                     </button>
-                    <button 
+                    <button
                         onClick={next}
                         className="w-14 h-14 rounded-full border border-brand-charcoal/10 dark:border-brand-cream/10 flex items-center justify-center text-brand-charcoal dark:text-brand-cream hover:bg-brand-charcoal hover:text-white dark:hover:bg-brand-cream dark:hover:text-brand-charcoal transition-all duration-500"
                     >
@@ -92,23 +92,23 @@ const PromotionsCarousel = ({ title, subLabel, promos = [] }) => {
             </div>
 
             <div className="relative overflow-hidden">
-                <motion.div 
+                <motion.div
                     className="flex gap-8"
                     animate={{ x: `calc(-${currentIndex * (100 / itemsPerPage)}% - ${currentIndex * (32 / itemsPerPage)}px)` }}
                     transition={{ type: "spring", damping: 25, stiffness: 120 }}
                 >
                     {promos.map((promo, idx) => (
-                        <div 
-                            key={promo.id || idx} 
+                        <div
+                            key={promo.id || idx}
                             style={{ minWidth: `calc(${(100 / itemsPerPage)}% - ${(32 * (itemsPerPage - 1)) / itemsPerPage}px)` }}
                             className="bg-[#f8f9fa] dark:bg-white/5 rounded-3xl overflow-hidden group flex flex-col items-center p-12 relative h-[500px] border border-transparent hover:border-brand-green/20 transition-all duration-700"
                         >
-                            <img 
-                                src={promo.image} 
-                                alt={promo.title} 
-                                className="h-64 object-contain mb-12 group-hover:scale-110 group-hover:-translate-y-4 transition-all duration-1000 ease-out" 
+                            <img
+                                src={promo.image}
+                                alt={promo.title}
+                                className="h-64 object-contain mb-12 group-hover:scale-110 group-hover:-translate-y-4 transition-all duration-1000 ease-out"
                             />
-                            
+
                             <div className="bg-brand-charcoal dark:bg-[#050505] text-white w-full absolute bottom-0 left-0 p-8 text-center transition-transform duration-700 group-hover:bg-brand-green">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full w-20 h-1 bg-brand-green group-hover:bg-white transition-colors" />
                                 <p className="text-[10px] uppercase tracking-[0.4em] text-brand-green group-hover:text-white font-black mb-2 transition-colors">Ahorra hasta</p>
@@ -119,7 +119,7 @@ const PromotionsCarousel = ({ title, subLabel, promos = [] }) => {
                     ))}
                 </motion.div>
             </div>
-            
+
             {maxIndex > 0 && (
                 <div className="flex justify-center gap-3 mt-12">
                     {Array.from({ length: maxIndex + 1 }).map((_, idx) => (

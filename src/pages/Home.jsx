@@ -8,31 +8,7 @@ import { faArrowRight, faTruck, faUndo, faHeadset, faCreditCard, faSyncAlt } fro
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-import PromotionsCarousel from '../components/PromotionsCarousel';
-
-const electrodomesticosPromos = [
-    { id: 1, title: "Luminarias Solares", amount: "$100.000", image: "assets/products/luminary-front-300.jpg" },
-    { id: 2, title: "Estaciones de Energía", amount: "$300.000", image: "assets/products/estacion-frente.jpg" },
-    { id: 3, title: "Power Banks Elite", amount: "$50.000", image: "assets/products/battery-front.jpg" },
-    { id: 4, title: "Ventiladores Solares", amount: "$80.000", image: "assets/products/fan-front.png" },
-    { id: 5, title: "Iluminación Premium", amount: "$40.000", image: "assets/products/lamp-front-2.jpg" }
-];
-
-const ferreteriaPromos = [
-    { id: 6, title: "Kits de Montaje", amount: "$45.000", image: "assets/products/fan-tools.png" },
-    { id: 7, title: "Herramientas de Instalación", amount: "$25.000", image: "assets/products/luminary-tools-300.jpg" },
-    { id: 8, title: "Cableado Estructurado", amount: "$15.000", image: "assets/products/estacion-cables.jpg" },
-    { id: 9, title: "Soportes de Hierro", amount: "$35.000", image: "assets/products/luminary-iron-300.jpg" },
-    { id: 10, title: "Accesorios de Medición", amount: "$12.000", image: "assets/products/battery-tools.jpg" }
-];
-
-const energiaSolarPromos = [
-    { id: 11, title: "Paneles Monocristalinos", amount: "$500.000", image: "assets/products/estacion-panel.jpg" },
-    { id: 12, title: "Reflectores de Alta Potencia", amount: "$120.000", image: "assets/products/reflector-front-300.jpg" },
-    { id: 13, title: "Controladores Inteligentes", amount: "$85.000", image: "assets/products/luminary-control-300.jpg" },
-    { id: 14, title: "Baterías Ciclo Profundo", amount: "$200.000", image: "assets/products/battery-front.jpg" },
-    { id: 15, title: "Estaciones Portátiles", amount: "$450.000", image: "assets/products/estacion-lado.jpg" }
-];
+import CategoryGrid from '../components/CategoryGrid';
 
 const Home = () => {
     const { products, loading } = useProducts();
@@ -85,24 +61,8 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Carousels Section */}
-            <div className="space-y-4">
-                <PromotionsCarousel 
-                    title="Electrodomésticos" 
-                    subLabel="Selección Exclusiva" 
-                    promos={electrodomesticosPromos} 
-                />
-                <PromotionsCarousel 
-                    title="Ferretería" 
-                    subLabel="Herramientas & Soporte" 
-                    promos={ferreteriaPromos} 
-                />
-                <PromotionsCarousel 
-                    title="Energía Solar" 
-                    subLabel="El Futuro es Hoy" 
-                    promos={energiaSolarPromos} 
-                />
-            </div>
+            {/* Categories Grid (Reference: Image Design) */}
+            <CategoryGrid />
 
             {/* Products Tabs Section */}
             <div className="container mx-auto px-6 py-10">
