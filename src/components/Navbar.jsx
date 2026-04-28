@@ -47,7 +47,7 @@ const Navbar = () => {
         ]
         : [
             { label: 'Inicio', path: '/' },
-            { label: 'Categorías', path: '/catalog' },
+            { label: 'Catálogo', path: '/catalog' },
             { label: 'Ofertas Especiales', path: '/catalog' }
         ];
 
@@ -171,9 +171,9 @@ const Navbar = () => {
             {/* Bottom Nav Menu - Hidden as per request for unified hamburger experience */}
             <div className="hidden border-t border-brand-charcoal/5 dark:border-white/5 bg-transparent">
                 <nav className="container mx-auto px-6 flex justify-center space-x-10 py-4">
-                    {navItems.map(item => (
+                    {navItems.map((item, idx) => (
                         <Link
-                            key={item.path}
+                            key={`${item.path}-${idx}`}
                             to={item.path}
                             className={`text-[11px] font-bold uppercase tracking-widest text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-colors ${location.pathname === item.path ? 'text-brand-green' : ''}`}
                         >
@@ -229,9 +229,9 @@ const Navbar = () => {
                             </div>
                         </div>
                         <div className="flex flex-col py-4">
-                            {navItems.map(item => (
+                            {navItems.map((item, idx) => (
                                 <Link
-                                    key={item.path}
+                                    key={`${item.path}-${idx}`}
                                     to={item.path}
                                     onClick={() => setIsMenuOpen(false)}
                                     className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center justify-between group transition-all"
