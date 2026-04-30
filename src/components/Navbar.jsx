@@ -47,7 +47,8 @@ const Navbar = () => {
         ]
         : [
             { label: 'Inicio', path: '/' },
-            { label: 'Catálogo', path: '/catalog' },
+            { label: 'Quienes Somos', path: '/about' },
+            { label: 'Tienda', path: '/catalog' },
             { label: 'Ofertas Especiales', path: '/catalog' }
         ];
 

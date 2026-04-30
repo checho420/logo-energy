@@ -4,6 +4,7 @@ import Layout from './layout/Layout';
 import Catalog from './pages/Catalog';
 import ProductDetail from './pages/ProductDetail';
 import Home from './pages/Home';
+import About from './pages/About';
 import NotFound from './pages/NotFound';
 
 import Checkout from './pages/Checkout';
@@ -21,6 +22,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
@@ -33,8 +35,8 @@ function App() {
             <Route path="customers" element={<Customers />} />
           </Route>
 
-          <Route path="/cart" element={<div className="p-20 text-center dark:text-white">El carrito llegará pronto...</div>} />
-          <Route path="/login" element={<div className="p-20 text-center dark:text-white">Página de Inicio de Sesión</div>} />
+          <Route path="/cart" element={<div className="p-20 text-center dark:text-white uppercase tracking-widest font-black">Tu carrito se está configurando...</div>} />
+          <Route path="/login" element={<div className="p-20 text-center dark:text-white uppercase tracking-widest font-black">Acceso a Mi Cuenta</div>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
@@ -43,4 +45,3 @@ function App() {
 }
 
 export default App;
-
