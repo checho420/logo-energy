@@ -33,7 +33,7 @@ const categories = [
         description: 'Herramientas y kits profesionales para instalaciones seguras.',
         link: '/catalog?category=ferreteria',
         image: 'assets/products/luminary-tools-300.jpg',
-        icon: faHammer,
+        icon: faTools,
         color: 'bg-orange-500',
         borderColor: 'hover:border-orange-500/20',
         imgClass: 'w-52 -bottom-2 -right-2'
@@ -68,8 +68,8 @@ const CategoryGrid = () => {
                         <div className={`absolute top-0 left-0 w-full h-[5px] ${cat.color} transform origin-left transition-transform duration-700 scale-x-0 group-hover:scale-x-100`} />
                         <div className={`absolute top-0 left-0 w-[5px] h-full ${cat.color} transform origin-top transition-transform duration-700 delay-100 scale-y-0 group-hover:scale-y-100`} />
                         
-                        {/* Subtle Background Icon (Replacing numbers) */}
-                        <div className="absolute -bottom-8 -left-8 text-[140px] opacity-[0.03] text-brand-charcoal dark:text-white group-hover:opacity-[0.08] group-hover:scale-110 transition-all duration-1000 transform -rotate-12">
+                        {/* Subtle Background Icon - Now on the Right Side */}
+                        <div className="absolute -bottom-8 -right-8 text-[140px] opacity-[0.03] text-brand-charcoal dark:text-white group-hover:opacity-[0.08] group-hover:scale-110 transition-all duration-1000 transform rotate-12">
                             <FontAwesomeIcon icon={cat.icon} />
                         </div>
 
@@ -103,15 +103,6 @@ const CategoryGrid = () => {
                             </Link>
                         </div>
                         
-                        {/* High-end Image interaction */}
-                        <div className="absolute top-1/2 -right-6 -translate-y-1/2 w-52 h-52 pointer-events-none">
-                            <div className="absolute inset-0 bg-gray-50 dark:bg-white/5 rounded-full scale-0 group-hover:scale-100 transition-transform duration-1000 ease-out" />
-                            <motion.img 
-                                src={cat.image} 
-                                alt={cat.title} 
-                                className={`absolute inset-0 w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-1000 z-10 p-4 transform group-hover:scale-110 group-hover:-translate-x-4`}
-                            />
-                        </div>
                     </motion.div>
                 ))}
             </div>

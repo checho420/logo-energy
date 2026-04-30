@@ -4,7 +4,7 @@ import ProductCard from '../components/ProductCard';
 import { useProducts } from '../context/ProductContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
-import { faArrowRight, faTruck, faUndo, faHeadset, faCreditCard, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faTruck, faUndo, faHeadset, faCreditCard, faSyncAlt, faSolarPanel, faHardHat, faTools, faTruckFast } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -42,21 +42,26 @@ const Home = () => {
 
             {/* Features Row - After Hero */}
             <div className="container mx-auto px-6 py-10 border-b border-gray-100 dark:border-white/5">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-white/5">
-                    <div className="flex flex-col items-center justify-center p-4">
-                        <FontAwesomeIcon icon={faTruck} className="text-3xl lg:text-4xl text-brand-charcoal/20 dark:text-brand-cream/20 mb-4" />
-                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest">Envío Gratis & Devoluciones</h4>
-                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">Por órdenes de más de $200.000</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 lg:divide-x divide-gray-100 dark:divide-white/5">
+                    <div className="flex flex-col items-center justify-center p-4 group">
+                        <FontAwesomeIcon icon={faSolarPanel} className="text-3xl text-[#AC192C] mb-4 group-hover:scale-110 transition-transform" />
+                        <h4 className="font-bold text-brand-charcoal dark:text-brand-cream uppercase text-xs tracking-[0.2em]">Energía Solar</h4>
+                        <p className="font-sans text-[9px] text-gray-500 dark:text-gray-400 mt-3 uppercase tracking-widest leading-relaxed max-w-[200px]">estaciones de energía, sistemas de respaldo, almacenamiento.</p>
                     </div>
-                    <div className="flex flex-col items-center justify-center p-4">
-                        <FontAwesomeIcon icon={faUndo} className="text-3xl lg:text-4xl text-brand-charcoal/20 dark:text-brand-cream/20 mb-4" />
-                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest">Garantía de Devolución</h4>
-                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">100% de garantía de fábrica</p>
+                    <div className="flex flex-col items-center justify-center p-4 group">
+                        <FontAwesomeIcon icon={faHardHat} className="text-3xl text-[#AC192C] mb-4 group-hover:scale-110 transition-transform" />
+                        <h4 className="font-bold text-brand-charcoal dark:text-brand-cream uppercase text-xs tracking-[0.2em]">Obras Civiles</h4>
+                        <p className="font-sans text-[9px] text-gray-500 dark:text-gray-400 mt-3 uppercase tracking-widest leading-relaxed max-w-[200px]">apoyo y suministro para proyectos e infraestructura.</p>
                     </div>
-                    <div className="flex flex-col items-center justify-center p-4">
-                        <FontAwesomeIcon icon={faHeadset} className="text-3xl lg:text-4xl text-brand-charcoal/20 dark:text-brand-cream/20 mb-4" />
-                        <h4 className="font-black text-brand-charcoal dark:text-brand-cream uppercase text-sm tracking-widest">Soporte Online 24/7</h4>
-                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">Estamos para ti siempre</p>
+                    <div className="flex flex-col items-center justify-center p-4 group">
+                        <FontAwesomeIcon icon={faTools} className="text-3xl text-[#AC192C] mb-4 group-hover:scale-110 transition-transform" />
+                        <h4 className="font-bold text-brand-charcoal dark:text-brand-cream uppercase text-xs tracking-[0.2em]">Ferretería Tecnología</h4>
+                        <p className="font-sans text-[9px] text-gray-500 dark:text-gray-400 mt-3 uppercase tracking-widest leading-relaxed max-w-[200px]">soluciones industriales y comerciales, equipos y soluciones operativas.</p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center p-4 group">
+                        <FontAwesomeIcon icon={faTruckFast} className="text-3xl text-[#AC192C] mb-4 group-hover:scale-110 transition-transform" />
+                        <h4 className="font-bold text-brand-charcoal dark:text-brand-cream uppercase text-xs tracking-[0.2em]">Servicios Logísticos</h4>
+                        <p className="font-sans text-[9px] text-gray-500 dark:text-gray-400 mt-3 uppercase tracking-widest leading-relaxed max-w-[200px]">asesoría, acompañamiento y soporte técnico.</p>
                     </div>
                 </div>
             </div>
@@ -221,17 +226,6 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* WhatsApp Floating */}
-            <motion.a
-                href="https://wa.me/1234567890"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="fixed bottom-10 right-10 bg-brand-green text-white h-16 w-16 rounded-full flex items-center justify-center shadow-2xl z-50 transition-colors"
-            >
-                <FontAwesomeIcon icon={faWhatsapp} className="text-3xl" />
-            </motion.a>
         </div>
     );
 };

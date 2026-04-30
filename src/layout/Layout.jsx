@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CartSidebar from '../components/CartSidebar';
+import FloatingWhatsApp from '../components/FloatingWhatsApp';
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -16,6 +17,7 @@ const Layout = ({ children }) => {
                 {children}
             </main>
             <Footer />
+            <FloatingWhatsApp />
         </div>
     );
 };

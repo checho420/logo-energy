@@ -7,7 +7,8 @@ import LoginModal from './LoginModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faSearch, faUser, faShoppingCart, faBars, faTimes, 
-    faHome, faStore, faCrown, faTag, faPhoneVolume, faSun, faMoon 
+    faHome, faStore, faCrown, faTag, faPhoneVolume, faSun, faMoon,
+    faChartLine, faTruck, faBoxesStacked, faUsers, faCircleInfo
 } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { faFacebookF, faTwitter, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
@@ -40,15 +41,16 @@ const Navbar = () => {
 
     const navItems = isAdmin
         ? [
-            { label: 'Visión General', path: '/admin' },
-            { label: 'Logística', path: '/admin/orders' },
-            { label: 'Inventario', path: '/admin/products' },
-            { label: 'Audiencia', path: '/admin/customers' },
+            { label: 'Visión General', path: '/admin', icon: faChartLine },
+            { label: 'Logística', path: '/admin/orders', icon: faTruck },
+            { label: 'Inventario', path: '/admin/products', icon: faBoxesStacked },
+            { label: 'Audiencia', path: '/admin/customers', icon: faUsers },
         ]
         : [
-            { label: 'Inicio', path: '/' },
-            { label: 'Catálogo', path: '/catalog' },
-            { label: 'Ofertas Especiales', path: '/catalog' }
+            { label: 'Inicio', path: '/', icon: faHome },
+            { label: 'Quienes Somos', path: '/about', icon: faCircleInfo },
+            { label: 'Tienda', path: '/catalog', icon: faStore },
+            { label: 'Ofertas Especiales', path: '/catalog', icon: faTag }
         ];
 
     return (
@@ -175,8 +177,9 @@ const Navbar = () => {
                         <Link
                             key={`${item.path}-${idx}`}
                             to={item.path}
-                            className={`text-[11px] font-bold uppercase tracking-widest text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-colors ${location.pathname === item.path ? 'text-brand-green' : ''}`}
+                            className={`text-[11px] font-bold uppercase tracking-widest text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-all flex items-center gap-2 group ${location.pathname === item.path ? 'text-brand-green' : ''}`}
                         >
+                            <FontAwesomeIcon icon={item.icon} className="transition-transform group-hover:scale-125" />
                             {item.label}
                         </Link>
                     ))}
@@ -236,12 +239,14 @@ const Navbar = () => {
                                     onClick={() => setIsMenuOpen(false)}
                                     className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center justify-between group transition-all"
                                 >
-                                    <motion.span 
+                                    <motion.div 
                                         whileHover={{ x: 10 }}
                                         transition={{ type: 'spring', stiffness: 300 }}
+                                        className="flex items-center gap-3"
                                     >
-                                        {item.label}
-                                    </motion.span>
+                                        <FontAwesomeIcon icon={item.icon} className="text-brand-green/70 group-hover:text-brand-green transition-colors" />
+                                        <span>{item.label}</span>
+                                    </motion.div>
                                     <FontAwesomeIcon icon={faBars} className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px]" />
                                 </Link>
                             ))}
