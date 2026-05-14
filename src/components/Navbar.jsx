@@ -21,17 +21,33 @@ const Navbar = () => {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [visible, setVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
     const navigate = useNavigate();
     const location = useLocation();
     const currentIconColor = theme === 'dark' ? '#FFFFFF' : '#0B0D0E';
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            const currentScrollY = window.scrollY;
+            
+            // Effect transparency
+            setScrolled(currentScrollY > 20);
+
+            // Smart Visibility Logic
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling Down
+                setVisible(false);
+            } else {
+                // Scrolling Up
+                setVisible(true);
+            }
+            
+            setLastScrollY(currentScrollY);
         };
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [lastScrollY]);
 
     useEffect(() => {
         setIsMenuOpen(false);
@@ -55,10 +71,16 @@ const Navbar = () => {
 
     return (
         <>
-            <header key={theme} className={`w-full fixed top-0 z-50 transition-all duration-700 ease-in-out ${scrolled
+            <motion.header 
+                key={theme} 
+                initial={{ y: 0 }}
+                animate={{ y: visible ? 0 : -100 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className={`w-full fixed top-0 z-50 transition-all duration-700 ease-in-out ${scrolled
                     ? 'bg-white/70 dark:bg-[#1A1D1E]/70 backdrop-blur-2xl shadow-xl py-1'
                     : 'bg-transparent py-4'
-                }`}>
+                }`}
+            >
                 {/* Top Utility Bar */}
                 <motion.div
                     initial={false}
@@ -226,7 +248,7 @@ const Navbar = () => {
                     </div>
                 </div>
                 <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-            </header>
+            </motion.header>
 
             {/* Mobile Menu Side Drawer */}
             <AnimatePresence>
