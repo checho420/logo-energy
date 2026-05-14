@@ -17,7 +17,7 @@ const Footer = () => {
 
                     <div className="flex flex-wrap justify-center gap-x-12 gap-y-4">
                         <a href="/" className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40 dark:text-brand-cream/40 hover:text-brand-green transition-colors">Inicio</a>
-                        <a href="/catalog" className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40 dark:text-brand-cream/40 hover:text-brand-green transition-colors">Tienda</a>
+                        <a href="/shop" className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40 dark:text-brand-cream/40 hover:text-brand-green transition-colors">Tienda</a>
                         <a href="/bestsellers" className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40 dark:text-brand-cream/40 hover:text-brand-green transition-colors">Elite</a>
                         <a href="/sale" className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40 dark:text-brand-cream/40 hover:text-brand-green transition-colors">Gangazos</a>
                     </div>

@@ -132,8 +132,8 @@ const Checkout = () => {
                 </div>
                 <h1 className="text-4xl font-black mb-4 uppercase tracking-tighter">Tu carrito está vacío</h1>
                 <p className="text-gray-500 mb-10 max-w-md mx-auto font-medium">Parece que aún no has añadido productos. Explora nuestro catálogo y encuentra las mejores soluciones en energía solar.</p>
-                <Link to="/catalog" className="inline-flex bg-[#333333] text-white px-10 py-4 rounded-none font-bold uppercase tracking-widest text-xs hover:bg-black transition-colors">
-                    Volver al Catálogo
+                <Link to="/shop" className="inline-flex bg-[#333333] text-white px-10 py-4 rounded-none font-bold uppercase tracking-widest text-xs hover:bg-black transition-colors">
+                    Volver a la Tienda
                 </Link>
             </div>
         );

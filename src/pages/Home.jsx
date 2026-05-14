@@ -81,8 +81,8 @@ const Home = () => {
                             </button>
                         </div>
                     </div>
-                    <Link to="/catalog" className="text-[10px] font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-[0.3em] border-b-2 border-brand-green pb-2 hover:translate-x-2 transition-transform inline-block">
-                        VER TODO EL CATÁLOGO
+                    <Link to="/shop" className="text-[10px] font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-[0.3em] border-b-2 border-brand-green pb-2 hover:translate-x-2 transition-transform inline-block">
+                        VER TODA LA TIENDA
                     </Link>
                 </div>
 

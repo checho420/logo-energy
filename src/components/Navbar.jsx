@@ -49,8 +49,8 @@ const Navbar = () => {
         : [
             { label: 'Inicio', path: '/', icon: faHome },
             { label: 'Quienes Somos', path: '/about', icon: faCrown },
-            { label: 'Tienda', path: '/catalog', icon: faStore },
-            { label: 'Ofertas Especiales', path: '/catalog', icon: faTag }
+            { label: 'Tienda', path: '/shop', icon: faStore },
+            { label: 'Ofertas Especiales', path: '/shop', icon: faTag }
         ];
 
     return (
@@ -89,7 +89,7 @@ const Navbar = () => {
                             </div>
                             <div className="flex items-center gap-2 group">
                                 <FontAwesomeIcon icon={faShoppingCart} className="text-[9px] opacity-70 group-hover:text-white group-hover:scale-110 transition-all" />
-                                <Link to="/catalog" className="font-bold uppercase hover:underline decoration-1 underline-offset-4">Comprar ahora</Link>
+                                <Link to="/shop" className="font-bold uppercase hover:underline decoration-1 underline-offset-4">Comprar ahora</Link>
                             </div>
                         </div>
                     </div>

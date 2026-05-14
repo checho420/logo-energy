@@ -9,7 +9,7 @@ const categories = [
         id: 'electro',
         title: 'Electrodomésticos',
         description: 'Innovación y eficiencia para tu hogar con energía limpia.',
-        link: '/catalog?category=electrodomesticos',
+        link: '/shop?category=electrodomesticos',
         icon: faPlug,
         color: 'bg-blue-600',
         borderColor: 'hover:border-blue-600/20'
@@ -18,7 +18,7 @@ const categories = [
         id: 'solar',
         title: 'Energía Solar',
         description: 'Potencia ilimitada con tecnología solar de última generación.',
-        link: '/catalog?category=energia-solar',
+        link: '/shop?category=energia-solar',
         icon: faSun,
         color: 'bg-brand-green',
         borderColor: 'hover:border-brand-green/20'
@@ -27,7 +27,7 @@ const categories = [
         id: 'ferre',
         title: 'Ferretería',
         description: 'Herramientas y kits profesionales para instalaciones seguras.',
-        link: '/catalog?category=ferreteria',
+        link: '/shop?category=ferreteria',
         icon: faTools,
         color: 'bg-orange-500',
         borderColor: 'hover:border-orange-500/20'
@@ -36,7 +36,7 @@ const categories = [
         id: 'estaciones',
         title: 'Estaciones Pro',
         description: 'Respaldo energético constante para tus aventuras and trabajo.',
-        link: '/catalog?category=estaciones',
+        link: '/shop?category=estaciones',
         icon: faBatteryFull,
         color: 'bg-brand-charcoal',
         borderColor: 'hover:border-brand-charcoal/20'

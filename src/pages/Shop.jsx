@@ -8,20 +8,55 @@ import {
     faFilter,
     faChevronDown,
     faTimes,
-    faStar as faStarSolid
+    faStar as faStarSolid,
+    faBorderAll,
+    faPlug,
+    faSun,
+    faHammer,
+    faBatteryFull
 } from '@fortawesome/free-solid-svg-icons';
 
-const Catalog = () => {
+import { useLocation } from 'react-router-dom';
+
+const Shop = () => {
     const { products, loading } = useProducts();
+    const location = useLocation();
+
+    // Map URL slug back to UI Label
+    const getInitialCategory = () => {
+        const params = new URLSearchParams(location.search);
+        const catParam = params.get('category');
+        if (!catParam) return 'Todos';
+        
+        const mapping = {
+            'electrodomesticos': 'Electrodomésticos',
+            'energia-solar': 'Energía Solar',
+            'ferreteria': 'Ferretería',
+            'estaciones': 'Estaciones Pro'
+        };
+        return mapping[catParam] || 'Todos';
+    };
+
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('Todos');
+    const [selectedCategory, setSelectedCategory] = useState(getInitialCategory());
     const [selectedBrand, setSelectedBrand] = useState('Todas');
     const [priceRange, setPriceRange] = useState({ min: 0, max: '' });
     const [sortBy, setSortBy] = useState('Popularidad');
     const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
+    // Sync when URL changes
+    useEffect(() => {
+        setSelectedCategory(getInitialCategory());
+    }, [location.search]);
+
     // Categories and brands for filters
-    const categories = useMemo(() => ['Todos', ...new Set(products.map(p => p.category))], [products]);
+    const categoryOptions = [
+        { label: 'Todos', icon: faBorderAll },
+        { label: 'Electrodomésticos', icon: faPlug },
+        { label: 'Energía Solar', icon: faSun },
+        { label: 'Ferretería', icon: faHammer },
+        { label: 'Estaciones Pro', icon: faBatteryFull }
+    ];
     const brands = useMemo(() => ['Todas', ...new Set(products.map(p => p.brand))], [products]);
 
     const filteredProducts = useMemo(() => {
@@ -36,7 +71,17 @@ const Catalog = () => {
         }
 
         if (selectedCategory !== 'Todos') {
-            result = result.filter(p => p.category === selectedCategory);
+            result = result.filter(p => {
+                const productCat = (p.category || '').toLowerCase();
+                const selected = selectedCategory.toLowerCase();
+
+                if (selected === 'electrodomésticos') return productCat.includes('ventilador');
+                if (selected === 'energía solar') return productCat.includes('iluminacion') || productCat.includes('iluminación') || productCat.includes('luminaria');
+                if (selected === 'estaciones pro') return productCat.includes('generador') || productCat.includes('bateria') || productCat.includes('batería');
+                if (selected === 'ferretería') return productCat.includes('herramienta') || productCat.includes('ferre');
+                
+                return productCat === selected;
+            });
         }
 
         if (selectedBrand !== 'Todas') {
@@ -76,7 +121,7 @@ const Catalog = () => {
             {/* Header Banner */}
             <div className="bg-[#f4f4f4] dark:bg-[#1f2122] py-20 px-6">
                 <div className="container mx-auto">
-                    <h1 className="text-4xl md:text-5xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter mb-4">Nuestro Catálogo</h1>
+                    <h1 className="text-4xl md:text-5xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter mb-4">Nuestra Tienda</h1>
                     <p className="text-gray-500 max-w-xl text-sm font-medium leading-relaxed">Explora nuestra colección de productos diseñados para potenciar tu vida con tecnología de vanguardia y energía sostenible.</p>
                 </div>
             </div>
@@ -95,17 +140,21 @@ const Catalog = () => {
                             {/* Category Filter */}
                             <div>
                                 <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Categoría</h4>
-                                <div className="space-y-2">
-                                    {categories.map(cat => (
+                                <div className="space-y-1">
+                                    {categoryOptions.map(cat => (
                                         <button
-                                            key={cat}
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`block w-full text-left px-4 py-2 text-sm font-bold transition-all ${selectedCategory === cat
-                                                ? 'text-brand-green bg-brand-green/10'
-                                                : 'text-gray-500 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal'
+                                            key={cat.label}
+                                            onClick={() => setSelectedCategory(cat.label)}
+                                            className={`flex items-center gap-3 w-full text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-all group ${selectedCategory === cat.label
+                                                ? 'text-brand-green bg-brand-green/5 border-r-4 border-brand-green'
+                                                : 'text-gray-400 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal/50'
                                                 }`}
                                         >
-                                            {cat}
+                                            <FontAwesomeIcon 
+                                                icon={cat.icon} 
+                                                className={`text-[14px] transition-transform duration-300 ${selectedCategory === cat.label ? 'scale-110' : 'group-hover:scale-110 group-hover:rotate-6'}`} 
+                                            />
+                                            <span>{cat.label}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -119,7 +168,7 @@ const Catalog = () => {
                                         <button
                                             key={brand}
                                             onClick={() => setSelectedBrand(brand)}
-                                            className={`block w-full text-left px-4 py-2 text-sm font-bold transition-all ${selectedBrand === brand
+                                            className={`block w-full text-left px-4 py-2 text-sm font-bold transition-all ${selectedCategory === brand
                                                 ? 'text-brand-green bg-brand-green/10'
                                                 : 'text-gray-500 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal'
                                                 }`}
@@ -214,15 +263,19 @@ const Catalog = () => {
                             ) : filteredProducts.length > 0 ? (
                                 <motion.div
                                     layout
-                                    className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6"
+                                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10 lg:gap-14"
                                 >
-                                    {filteredProducts.map(product => (
+                                    {filteredProducts.map((product, idx) => (
                                         <motion.div
                                             key={product.id}
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.3 }}
+                                            initial={{ opacity: 0, y: 40 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            transition={{ 
+                                                duration: 0.8, 
+                                                delay: idx * 0.05,
+                                                ease: [0.22, 1, 0.36, 1] 
+                                            }}
                                         >
                                             <ProductCard product={product} />
                                         </motion.div>
@@ -293,16 +346,17 @@ const Catalog = () => {
                                 <div>
                                     <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Categoría</h4>
                                     <div className="flex flex-col gap-2">
-                                        {categories.map(cat => (
+                                        {categoryOptions.map(cat => (
                                             <button
-                                                key={cat}
-                                                onClick={() => setSelectedCategory(cat)}
-                                                className={`text-left px-4 py-3 border text-xs font-bold uppercase tracking-widest transition-all ${selectedCategory === cat
+                                                key={cat.label}
+                                                onClick={() => setSelectedCategory(cat.label)}
+                                                className={`flex items-center gap-4 text-left px-4 py-4 border text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 ${selectedCategory === cat.label
                                                     ? 'border-brand-green text-brand-green bg-brand-green/5'
-                                                    : 'border-gray-100 dark:border-gray-800 text-gray-500'
+                                                    : 'border-gray-100 dark:border-gray-800 text-gray-400'
                                                     }`}
                                             >
-                                                {cat}
+                                                <FontAwesomeIcon icon={cat.icon} className="text-sm" />
+                                                <span>{cat.label}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -344,5 +398,4 @@ const Catalog = () => {
     );
 };
 
-export default Catalog;
-
+export default Shop;

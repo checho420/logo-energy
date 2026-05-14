@@ -71,7 +71,7 @@ const NotFound = () => {
                         </Link>
 
                         <Link
-                            to="/catalog"
+                            to="/shop"
                             className="group flex items-center gap-3 bg-white dark:bg-brand-charcoal/50 border border-brand-charcoal/10 dark:border-brand-cream/10 text-brand-charcoal dark:text-brand-cream px-8 py-5 rounded-full font-black uppercase text-[10px] tracking-[0.3em] hover:border-brand-green transition-all active:scale-95"
                         >
                             <FontAwesomeIcon icon={faSun} className="group-hover:rotate-12 transition-transform text-brand-green" />

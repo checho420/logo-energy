@@ -120,7 +120,7 @@ const Hero = () => {
                             </p>
 
                             <div className="mt-8 flex items-center gap-6">
-                                <Link to="/catalog" className="bg-brand-charcoal dark:bg-brand-cream text-white dark:text-brand-charcoal px-10 py-4 font-black uppercase tracking-widest text-sm hover:bg-brand-green dark:hover:bg-brand-green hover:text-white transition-all shadow-xl hover:shadow-brand-green/30 hover:-translate-y-1">
+                                <Link to="/shop" className="bg-brand-charcoal dark:bg-brand-cream text-white dark:text-brand-charcoal px-10 py-4 font-black uppercase tracking-widest text-sm hover:bg-brand-green dark:hover:bg-brand-green hover:text-white transition-all shadow-xl hover:shadow-brand-green/30 hover:-translate-y-1">
                                     COMPRAR AHORA
                                 </Link>
                                 <div className="flex gap-2">

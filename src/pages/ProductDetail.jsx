@@ -64,7 +64,7 @@ const ProductDetail = () => {
     if (!product) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-[#151718] text-brand-charcoal dark:text-brand-cream">
             <h2 className="text-4xl font-black mb-8 tracking-tighter uppercase">Producto no encontrado</h2>
-            <button onClick={() => navigate('/catalog')} className="text-white hover:bg-brand-green transition-all px-10 py-4 bg-brand-charcoal rounded-none uppercase font-bold tracking-widest text-sm">Volver al catálogo</button>
+            <button onClick={() => navigate('/shop')} className="text-white hover:bg-brand-green transition-all px-10 py-4 bg-brand-charcoal rounded-none uppercase font-bold tracking-widest text-sm">Volver a la tienda</button>
         </div>
     );
 
@@ -76,7 +76,7 @@ const ProductDetail = () => {
                     <div className="flex items-center space-x-3 text-xs font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                         <span className="hover:text-brand-green cursor-pointer transition-all" onClick={() => navigate('/')}>Home</span>
                         <FontAwesomeIcon icon={faChevronRight} className="text-[8px]" />
-                        <span className="hover:text-brand-green cursor-pointer transition-all" onClick={() => navigate('/catalog')}>Tienda</span>
+                        <span className="hover:text-brand-green cursor-pointer transition-all" onClick={() => navigate('/shop')}>Tienda</span>
                         <FontAwesomeIcon icon={faChevronRight} className="text-[8px]" />
                         <span className="text-brand-charcoal dark:text-brand-cream">{product.name}</span>
                     </div>
@@ -301,7 +301,7 @@ const ProductDetail = () => {
                     <section className="mt-32 pt-20 border-t border-gray-200 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-12">
                             <h3 className="text-3xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tight">Productos Relacionados</h3>
-                            <button onClick={() => navigate('/catalog')} className="text-xs font-black text-brand-green uppercase tracking-widest hover:text-brand-charcoal transition-colors">Ver todos →</button>
+                            <button onClick={() => navigate('/shop')} className="text-xs font-black text-brand-green uppercase tracking-widest hover:text-brand-charcoal transition-colors">Ver todos →</button>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {relatedProducts.map(p => (

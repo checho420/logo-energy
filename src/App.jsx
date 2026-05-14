@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './layout/Layout';
-import Catalog from './pages/Catalog';
+import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -23,7 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/shop" element={<Shop />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
 
