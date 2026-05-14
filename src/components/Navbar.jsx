@@ -60,32 +60,32 @@ const Navbar = () => {
                 ? 'bg-white/70 dark:bg-[#1A1D1E]/70 backdrop-blur-md shadow-md py-0' 
                 : 'bg-white dark:bg-[#1A1D1E] shadow-sm py-2'
         }`}>
-            {/* Top Green Bar */}
-            <div className="bg-brand-green text-white py-2 px-6 flex justify-between items-center text-[10px] md:text-xs">
-                {/* Left: Social Icons */}
-                <div className="flex gap-4 opacity-90 items-center">
-                    {[faFacebookF, faTwitter, faInstagram, faLinkedinIn].map((icon, idx) => (
-                        <motion.button 
-                            key={idx}
-                            whileHover={{ scale: 1.3, color: '#FFFFFF', rotate: 10 }}
-                            className="text-[12px] outline-none"
-                        >
-                            <FontAwesomeIcon icon={icon} />
-                        </motion.button>
-                    ))}
+            {/* Top Green Bar - Utility Layout */}
+            <div className="bg-brand-green text-white py-1.5 px-8 flex justify-between items-center text-[10px] tracking-[0.1em] font-medium border-b border-white/5">
+                {/* Left: Direct Contact */}
+                <div className="flex items-center gap-2 group cursor-pointer">
+                    <FontAwesomeIcon icon={faPhoneVolume} className="text-[9px] text-white/70 group-hover:text-white transition-colors" />
+                    <span className="opacity-80 group-hover:opacity-100 transition-opacity uppercase">Llámanos:</span>
+                    <a href="tel:+573217864103" className="font-bold">+57 321 786 4103</a>
                 </div>
 
-                {/* Center: Contact Info */}
-                <div className="hidden sm:flex items-center gap-2 font-bold tracking-widest uppercase bg-white/10 px-4 py-1 rounded-full backdrop-blur-sm border border-white/5 mx-4">
-                    <FontAwesomeIcon icon={faPhoneVolume} className="text-[10px] animate-pulse" />
-                    <span>Llámanos ahora</span>
-                    <a href="tel:+573217864103" className="hover:text-brand-charcoal transition-colors ml-1">+57 321 786 4103</a>
-                </div>
-
-                {/* Right: Shop Link */}
-                <div className="flex items-center gap-2 font-bold tracking-widest uppercase">
-                    <FontAwesomeIcon icon={faShoppingCart} className="text-[10px]" />
-                    <Link to="/catalog" className="underline hover:text-white/80 transition-colors">Comprar ahora</Link>
+                {/* Right: Socials & Action */}
+                <div className="flex items-center gap-6">
+                    <div className="hidden md:flex gap-4 items-center pr-6 border-r border-white/10">
+                        {[faFacebookF, faTwitter, faInstagram, faLinkedinIn].map((icon, idx) => (
+                            <motion.button 
+                                key={idx}
+                                whileHover={{ y: -2, color: '#FFFFFF' }}
+                                className="text-[11px] opacity-70 hover:opacity-100 transition-all"
+                            >
+                                <FontAwesomeIcon icon={icon} />
+                            </motion.button>
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-2 group">
+                        <FontAwesomeIcon icon={faShoppingCart} className="text-[9px] opacity-70 group-hover:text-white group-hover:scale-110 transition-all" />
+                        <Link to="/catalog" className="font-bold uppercase hover:underline decoration-1 underline-offset-4">Comprar ahora</Link>
+                    </div>
                 </div>
             </div>
 
@@ -97,40 +97,38 @@ const Navbar = () => {
                         LOGO<span className="text-brand-green italic group-hover:scale-105 transition-transform">Energy</span>
                     </Link>
                 </div>
-                {/* Desktop Menu */}
-                <nav className="hidden lg:flex flex-1 justify-center items-center gap-8">
-                    {navItems.map((item, idx) => (
-                        <Link
-                            key={`${item.path}-${idx}`}
-                            to={item.path}
-                            className={`text-[11px] font-bold uppercase tracking-widest text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-all duration-300 relative group flex items-center gap-2 ${
-                                location.pathname === item.path ? 'text-brand-green' : ''
-                            }`}
-                        >
-                            <motion.div 
-                                className="flex items-center gap-2"
-                                whileHover="hover"
-                            >
-                                <motion.span
-                                    variants={{
-                                        hover: { scale: 1.3, rotate: 10, color: '#D31A20' }
-                                    }}
-                                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                                >
-                                    <FontAwesomeIcon icon={item.icon} className="text-[14px]" />
-                                </motion.span>
-                                {item.label}
-                            </motion.div>
-                            <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-green transition-all duration-300 group-hover:w-full ${
-                                location.pathname === item.path ? 'w-full' : ''
-                            }`}></span>
-                        </Link>
-                    ))}
-                </nav>
 
-                {/* Contact & Icons */}
-                <div className="flex lg:flex-none justify-end items-center gap-6 lg:gap-10">
-                    <div className="flex items-center gap-6 text-brand-charcoal dark:text-white">
+                {/* Desktop Menu & Icons Grouped Right */}
+                <div className="flex items-center gap-12">
+                    <nav className="hidden lg:flex items-center gap-10">
+                        {navItems.map((item, idx) => (
+                            <Link
+                                key={`${item.path}-${idx}`}
+                                to={item.path}
+                                className={`text-[10px] font-black uppercase tracking-[0.2em] text-brand-charcoal/70 dark:text-brand-cream/70 hover:text-brand-green transition-all duration-300 relative group flex items-center gap-2.5 ${
+                                    location.pathname === item.path ? 'text-brand-green !opacity-100' : ''
+                                }`}
+                            >
+                                <motion.div 
+                                    className="flex items-center gap-2"
+                                    whileHover="hover"
+                                >
+                                    <motion.span
+                                        variants={{
+                                            hover: { scale: 1.2, rotate: 8, color: '#D31A20' }
+                                        }}
+                                        className="flex items-center"
+                                    >
+                                        <FontAwesomeIcon icon={item.icon} className="text-[12px]" />
+                                    </motion.span>
+                                    <span className="group-hover:tracking-[0.25em] transition-all duration-500">{item.label}</span>
+                                </motion.div>
+                            </Link>
+                        ))}
+                    </nav>
+
+                    {/* Action Icons */}
+                    <div className="flex items-center gap-6 text-brand-charcoal dark:text-white border-l border-gray-100 dark:border-white/5 pl-10">
                         {/* Theme Toggle */}
                         <motion.button 
                             onClick={toggleTheme} 
