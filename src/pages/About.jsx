@@ -142,7 +142,6 @@ const About = () => {
                         viewport={{ once: true }}
                         className="grid grid-cols-2 gap-4"
                     >
-                        {/* Interactive decorative tiles representing the "multibrand" concept */}
                         <div className="aspect-square bg-brand-green/5 dark:bg-brand-green/10 rounded-3xl flex flex-col items-center justify-center p-8 text-center border border-brand-green/10">
                             <span className="text-3xl font-black text-brand-green mb-2">+50</span>
                             <span className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/50 dark:text-brand-cream/50">Marcas Líderes</span>
