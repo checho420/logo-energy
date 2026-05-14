@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
         <div className="min-h-screen flex flex-col bg-brand-cream dark:bg-brand-charcoal transition-colors duration-1000 font-sans">
             <Navbar />
             <CartSidebar />
-            <main className={`flex-grow transition-all duration-700 ${isHome ? 'pt-0' : 'pt-20'}`}>
+            <main className={`flex-grow transition-all duration-700 ${isHome ? 'pt-0' : 'pt-32'}`}>
                 {children}
             </main>
             <Footer />

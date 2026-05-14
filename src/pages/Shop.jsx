@@ -109,192 +109,138 @@ const Shop = () => {
         return sortedResult;
     }, [products, searchTerm, selectedCategory, selectedBrand, priceRange, sortBy]);
 
-    const handleClearFilters = () => {
-        setSelectedCategory('Todos');
-        setSelectedBrand('Todas');
-        setPriceRange({ min: 0, max: '' });
-        setSearchTerm('');
-    };
+    // Group products by category for the sectioned layout
+    const sectionedProducts = useMemo(() => {
+        const groups = {};
+        categoryOptions.forEach(cat => {
+            if (cat.label === 'Todos') return;
+            const filteredForCat = products.filter(p => {
+                const productCat = (p.category || '').toLowerCase();
+                const target = cat.label.toLowerCase();
+                
+                if (target === 'electrodomésticos') return productCat.includes('ventilador');
+                if (target === 'energía solar') return productCat.includes('iluminacion') || productCat.includes('iluminación') || productCat.includes('luminaria');
+                if (target === 'estaciones pro') return productCat.includes('generador') || productCat.includes('bateria') || productCat.includes('batería');
+                if (target === 'ferretería') return productCat.includes('herramienta') || productCat.includes('ferre');
+                
+                return productCat === target;
+            });
+            if (filteredForCat.length > 0) {
+                groups[cat.label] = filteredForCat;
+            }
+        });
+        return groups;
+    }, [products, categoryOptions]);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#151718] pb-24 transition-colors duration-700">
-            {/* Header Banner */}
-            <div className="bg-[#f4f4f4] dark:bg-[#1f2122] py-20 px-6">
+        <div className="min-h-screen bg-[#FBFBFB] dark:bg-[#0F1112] pb-24 transition-colors duration-700">
+            {/* Header / Subheader */}
+            <div className="bg-white dark:bg-[#1A1D1E] py-12 px-6 border-b border-gray-100 dark:border-white/5">
                 <div className="container mx-auto">
-                    <h1 className="text-4xl md:text-5xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter mb-4">Nuestra Tienda</h1>
-                    <p className="text-gray-500 max-w-xl text-sm font-medium leading-relaxed">Explora nuestra colección de productos diseñados para potenciar tu vida con tecnología de vanguardia y energía sostenible.</p>
+                    <h1 className="text-3xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tight mb-2">Tienda Oficial</h1>
+                    <p className="text-gray-400 text-sm font-medium">Soluciones energéticas de vanguardia para tu hogar e industria.</p>
                 </div>
             </div>
 
-            <div className="container mx-auto px-6 py-12">
-                <div className="flex flex-col lg:flex-row gap-12">
-                    
-                    {/* Sidebar Filters (Desktop) */}
-                    <aside className="hidden lg:block w-72 flex-shrink-0">
-                        <div className="sticky top-32 space-y-8">
-                            <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
-                                <h3 className="text-lg font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-widest">Filtros</h3>
-                                <button onClick={handleClearFilters} className="text-[10px] font-bold uppercase tracking-widest text-brand-green hover:text-brand-charcoal transition-colors">Limpiar</button>
-                            </div>
+            <div className="container mx-auto px-6 py-8">
+                {/* Mobile Category Scroller (Only visible on small screens) */}
+                <div className="lg:hidden -mx-6 mb-8 px-6 overflow-x-auto no-scrollbar flex items-center gap-3 snap-x">
+                    {categoryOptions.map(cat => (
+                        <button
+                            key={cat.label}
+                            onClick={() => setSelectedCategory(cat.label)}
+                            className={`flex-shrink-0 flex items-center gap-3 px-6 py-3 rounded-2xl transition-all snap-start ${selectedCategory === cat.label
+                                ? 'bg-brand-green text-white shadow-lg'
+                                : 'bg-white dark:bg-[#1A1D1E] text-brand-charcoal/60 dark:text-white/60 border border-gray-100 dark:border-white/5'
+                                }`}
+                        >
+                            <FontAwesomeIcon icon={cat.icon} className="text-sm" />
+                            <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">{cat.label}</span>
+                        </button>
+                    ))}
+                </div>
 
-                            {/* Category Filter */}
-                            <div>
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Categoría</h4>
-                                <div className="space-y-1">
-                                    {categoryOptions.map(cat => (
-                                        <button
-                                            key={cat.label}
-                                            onClick={() => setSelectedCategory(cat.label)}
-                                            className={`flex items-center gap-3 w-full text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-all group ${selectedCategory === cat.label
-                                                ? 'text-brand-green bg-brand-green/5 border-r-4 border-brand-green'
-                                                : 'text-gray-400 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal/50'
-                                                }`}
-                                        >
+                <div className="flex flex-col lg:flex-row gap-10">
+                    
+                    {/* Sidebar Flotante (Desktop Only) */}
+                    <aside className="hidden lg:block lg:w-80 flex-shrink-0">
+                        <div className="sticky top-32 bg-white dark:bg-[#1A1D1E] p-6 rounded-[2rem] shadow-xl shadow-brand-charcoal/5 dark:shadow-none border border-gray-100 dark:border-white/5">
+                            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-brand-charcoal/40 dark:text-white/40 mb-8 px-4">Categorías</h3>
+                            <div className="space-y-2">
+                                {categoryOptions.map(cat => (
+                                    <button
+                                        key={cat.label}
+                                        onClick={() => setSelectedCategory(cat.label)}
+                                        className={`flex items-center justify-between w-full px-6 py-4 rounded-3xl transition-all duration-300 group ${selectedCategory === cat.label
+                                            ? 'bg-brand-green text-white shadow-lg shadow-brand-green/30'
+                                            : 'text-brand-charcoal/60 dark:text-white/60 hover:bg-gray-50 dark:hover:bg-white/5'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-4">
                                             <FontAwesomeIcon 
                                                 icon={cat.icon} 
-                                                className={`text-[14px] transition-transform duration-300 ${selectedCategory === cat.label ? 'scale-110' : 'group-hover:scale-110 group-hover:rotate-6'}`} 
+                                                className={`text-lg ${selectedCategory === cat.label ? 'text-white' : 'text-brand-green'}`} 
                                             />
-                                            <span>{cat.label}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Brand Filter */}
-                            <div>
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Marca</h4>
-                                <div className="space-y-2">
-                                    {brands.map(brand => (
-                                        <button
-                                            key={brand}
-                                            onClick={() => setSelectedBrand(brand)}
-                                            className={`block w-full text-left px-4 py-2 text-sm font-bold transition-all ${selectedCategory === brand
-                                                ? 'text-brand-green bg-brand-green/10'
-                                                : 'text-gray-500 hover:text-brand-charcoal dark:hover:text-brand-cream hover:bg-gray-50 dark:hover:bg-brand-charcoal'
-                                                }`}
-                                        >
-                                            {brand}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Price Range */}
-                            <div>
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Presupuesto</h4>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <input
-                                            type="number"
-                                            value={priceRange.min}
-                                            onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
-                                            placeholder="Mín"
-                                            className="w-full px-4 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none outline-none text-xs font-bold dark:text-brand-cream focus:ring-1 focus:ring-brand-green transition-all"
-                                        />
-                                    </div>
-                                    <div>
-                                        <input
-                                            type="number"
-                                            value={priceRange.max}
-                                            onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
-                                            placeholder="Máx"
-                                            className="w-full px-4 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none outline-none text-xs font-bold dark:text-brand-cream focus:ring-1 focus:ring-brand-green transition-all"
-                                        />
-                                    </div>
-                                </div>
+                                            <span className="text-xs font-black uppercase tracking-widest">{cat.label}</span>
+                                        </div>
+                                        <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${selectedCategory === cat.label ? 'bg-white/20' : 'bg-gray-100 dark:bg-white/10'}`}>
+                                            {cat.label === 'Todos' 
+                                                ? products.length 
+                                                : (Object.values(sectionedProducts).find((_, i) => Object.keys(sectionedProducts)[i] === cat.label)?.length || 0)}
+                                        </span>
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </aside>
 
-                    <div className="flex-grow">
-                        {/* Search and Sort Toolbar */}
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
-                            <div className="flex items-center gap-4 w-full sm:w-auto">
-                                <button
-                                    onClick={() => setIsFilterDrawerOpen(true)}
-                                    className="lg:hidden p-3 bg-[#f4f4f4] dark:bg-[#1f2122] text-brand-charcoal dark:text-brand-cream active:scale-95 transition-all"
-                                >
-                                    <FontAwesomeIcon icon={faFilter} />
-                                </button>
-                                <span className="text-sm font-bold text-gray-500">
-                                    {filteredProducts.length} Productos
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-4 w-full sm:w-auto">
-                                <div className="relative group w-full sm:w-64">
-                                    <FontAwesomeIcon icon={faSearch} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input
-                                        type="text"
-                                        placeholder="Buscar..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-[#f4f4f4] dark:bg-[#1f2122] border-none outline-none text-xs font-bold dark:text-brand-cream focus:ring-1 focus:ring-brand-green transition-all"
-                                    />
-                                </div>
-                                <div className="relative w-full sm:w-auto">
-                                    <select
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
-                                        className="appearance-none w-full bg-[#f4f4f4] dark:bg-[#1f2122] border-none px-6 py-3 pr-10 text-xs font-bold text-brand-charcoal dark:text-brand-cream outline-none cursor-pointer focus:ring-1 focus:ring-brand-green transition-all"
-                                    >
-                                        <option>Popularidad</option>
-                                        <option>Precio: Menor a Mayor</option>
-                                        <option>Precio: Mayor a Menor</option>
-                                        <option>Nombre</option>
-                                    </select>
-                                    <FontAwesomeIcon icon={faChevronDown} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[10px]" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Product Grid */}
-                        <AnimatePresence mode="popLayout">
-                            {loading ? (
-                                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-                                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                                        <div key={i} className="h-96 bg-[#f4f4f4] dark:bg-[#1f2122] animate-pulse flex flex-col p-4 gap-4">
-                                            <div className="h-48 bg-gray-200 dark:bg-gray-800 w-full mb-4" />
-                                            <div className="h-4 bg-gray-200 dark:bg-gray-800 w-1/3" />
-                                            <div className="h-6 bg-gray-200 dark:bg-gray-800 w-3/4" />
+                    {/* Contenido Principal por Secciones */}
+                    <div className="flex-grow space-y-12">
+                        {selectedCategory === 'Todos' ? (
+                            Object.entries(sectionedProducts).map(([category, items]) => (
+                                <section key={category} className="bg-white dark:bg-[#1A1D1E] p-6 lg:p-10 rounded-[2.5rem] lg:rounded-[3rem] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center gap-3 lg:gap-4">
+                                            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-brand-green/10 rounded-xl lg:rounded-2xl flex items-center justify-center text-brand-green">
+                                                <FontAwesomeIcon icon={categoryOptions.find(c => c.label === category)?.icon || faBorderAll} className="text-sm lg:text-xl" />
+                                            </div>
+                                            <h2 className="text-lg lg:text-2xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter">{category}</h2>
                                         </div>
+                                        <div className="flex gap-2">
+                                            <button className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:border-brand-green hover:text-brand-green transition-all">
+                                                <FontAwesomeIcon icon={faChevronDown} className="rotate-90 text-[10px]" />
+                                            </button>
+                                            <button className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-400 hover:border-brand-green hover:text-brand-green transition-all">
+                                                <FontAwesomeIcon icon={faChevronDown} className="-rotate-90 text-[10px]" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Product Scroll (Horizontal on Mobile, Grid on Desktop) */}
+                                    <div className="flex lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible no-scrollbar snap-x -mx-2 px-2 pb-4">
+                                        {items.map(product => (
+                                            <div key={product.id} className="min-w-[85vw] sm:min-w-[45vw] lg:min-w-0 snap-center">
+                                                <ProductCard product={product} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            ))
+                        ) : (
+                            <section className="bg-white dark:bg-[#1A1D1E] p-8 lg:p-10 rounded-[2.5rem] lg:rounded-[3rem] border border-gray-100 dark:border-white/5">
+                                <div className="flex items-center gap-4 mb-10">
+                                    <div className="w-12 h-12 bg-brand-green/10 rounded-2xl flex items-center justify-center text-brand-green">
+                                        <FontAwesomeIcon icon={categoryOptions.find(c => c.label === selectedCategory)?.icon || faBorderAll} className="text-xl" />
+                                    </div>
+                                    <h2 className="text-xl lg:text-2xl font-black text-brand-charcoal dark:text-brand-cream uppercase tracking-tighter">{selectedCategory}</h2>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                                    {filteredProducts.map(product => (
+                                        <ProductCard key={product.id} product={product} />
                                     ))}
                                 </div>
-                            ) : filteredProducts.length > 0 ? (
-                                <motion.div
-                                    layout
-                                    className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10 lg:gap-14"
-                                >
-                                    {filteredProducts.map((product, idx) => (
-                                        <motion.div
-                                            key={product.id}
-                                            initial={{ opacity: 0, y: 40 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.9 }}
-                                            transition={{ 
-                                                duration: 0.8, 
-                                                delay: idx * 0.05,
-                                                ease: [0.22, 1, 0.36, 1] 
-                                            }}
-                                        >
-                                            <ProductCard product={product} />
-                                        </motion.div>
-                                    ))}
-                                </motion.div>
-                            ) : (
-                                <div className="flex flex-col items-center justify-center py-32 text-center">
-                                    <FontAwesomeIcon icon={faTimes} className="text-4xl text-gray-300 mb-6" />
-                                    <h3 className="text-2xl font-black text-brand-charcoal dark:text-brand-cream mb-2 uppercase tracking-tight">Cero Resultados</h3>
-                                    <p className="text-gray-500 mb-8 max-w-sm text-sm">No encontramos productos que coincidan con tu búsqueda. ¿Intentamos con otros filtros?</p>
-                                    <button
-                                        onClick={handleClearFilters}
-                                        className="bg-brand-charcoal dark:bg-brand-cream text-white dark:text-brand-charcoal px-8 py-3 uppercase text-xs font-black tracking-widest hover:bg-brand-green transition-colors"
-                                    >
-                                        Limpiar Filtros
-                                    </button>
-                                </div>
-                            )}
-                        </AnimatePresence>
+                            </section>
+                        )}
                     </div>
                 </div>
             </div>

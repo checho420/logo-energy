@@ -55,9 +55,9 @@ const Navbar = () => {
 
     return (
         <>
-            <header key={theme} className={`w-full sticky top-0 z-50 transition-all duration-700 ease-in-out ${scrolled
-                    ? 'bg-white/40 dark:bg-[#1A1D1E]/40 backdrop-blur-2xl shadow-[0_1px_0_0_rgba(0,0,0,0.05)] py-1'
-                    : 'bg-white dark:bg-[#1A1D1E] shadow-sm py-2'
+            <header key={theme} className={`w-full fixed top-0 z-50 transition-all duration-700 ease-in-out ${scrolled
+                    ? 'bg-white/70 dark:bg-[#1A1D1E]/70 backdrop-blur-2xl shadow-xl py-1'
+                    : 'bg-transparent py-4'
                 }`}>
                 {/* Top Utility Bar */}
                 <motion.div
@@ -216,9 +216,9 @@ const Navbar = () => {
                             <motion.button
                                 onClick={() => setIsMenuOpen(true)}
                                 animate={{ color: currentIconColor }}
-                                whileHover={{ scale: 1.1, x: 5, color: '#3E7136' }}
+                                whileHover={{ scale: 1.1, color: '#2DD4BF' }}
                                 whileTap={{ scale: 0.9 }}
-                                className="text-2xl ml-2 outline-none lg:hidden"
+                                className="text-2xl ml-4 outline-none lg:hidden relative z-[60] p-2"
                             >
                                 <FontAwesomeIcon icon={faBars} />
                             </motion.button>
