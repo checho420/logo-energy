@@ -40,16 +40,16 @@ const Navbar = () => {
 
     const navItems = isAdmin
         ? [
-            { label: 'Visión General', path: '/admin' },
-            { label: 'Logística', path: '/admin/orders' },
-            { label: 'Inventario', path: '/admin/products' },
-            { label: 'Audiencia', path: '/admin/customers' },
+            { label: 'Visión General', path: '/admin', icon: faHome },
+            { label: 'Logística', path: '/admin/orders', icon: faStore },
+            { label: 'Inventario', path: '/admin/products', icon: faTag },
+            { label: 'Audiencia', path: '/admin/customers', icon: faUser },
         ]
         : [
-            { label: 'Inicio', path: '/' },
-            { label: 'Quienes Somos', path: '/about' },
-            { label: 'Tienda', path: '/catalog' },
-            { label: 'Ofertas Especiales', path: '/catalog' }
+            { label: 'Inicio', path: '/', icon: faHome },
+            { label: 'Quienes Somos', path: '/about', icon: faCrown },
+            { label: 'Tienda', path: '/catalog', icon: faStore },
+            { label: 'Ofertas Especiales', path: '/catalog', icon: faTag }
         ];
 
     return (
@@ -61,29 +61,30 @@ const Navbar = () => {
         }`}>
             {/* Top Green Bar */}
             <div className="bg-brand-green text-white py-2 px-6 flex justify-between items-center text-[10px] md:text-xs">
-                <div className="hidden md:flex gap-4 font-semibold opacity-90">
-                    <span className="cursor-pointer">ESPAÑOL ▾</span>
-                    <span className="cursor-pointer">COP ▾</span>
-                </div>
-                <div className="flex-1 text-center font-bold tracking-widest uppercase">
-                    OBTÉN HASTA <span className="bg-white text-brand-green px-1 mx-1 rounded-sm">40% OFF</span> EN NUEVOS ESTILOS <Link to="/sale" className="underline ml-2 hover:text-brand-charcoal transition-colors">COMPRAR AHORA</Link>
-                </div>
-                <div className="hidden xl:flex gap-6 font-semibold opacity-90 items-center">
-                    {['Mi Cuenta', 'Contáctanos', 'Blog', 'Mi Lista de Deseos'].map((text) => (
-                        <Link key={text} to="#" className="hover:text-brand-charcoal transition-colors hover:scale-105 transform inline-block">{text}</Link>
+                {/* Left: Social Icons */}
+                <div className="flex gap-4 opacity-90 items-center">
+                    {[faFacebookF, faTwitter, faInstagram, faLinkedinIn].map((icon, idx) => (
+                        <motion.button 
+                            key={idx}
+                            whileHover={{ scale: 1.3, color: '#FFFFFF', rotate: 10 }}
+                            className="text-[12px] outline-none"
+                        >
+                            <FontAwesomeIcon icon={icon} />
+                        </motion.button>
                     ))}
-                    <button onClick={() => setIsLoginOpen(true)} className="hover:text-brand-charcoal transition-colors hover:scale-105 transform">Iniciar Sesión</button>
-                    <div className="flex gap-4 ml-4 border-l border-white/20 pl-4">
-                        {[faFacebookF, faTwitter, faInstagram, faLinkedinIn].map((icon, idx) => (
-                            <motion.button 
-                                key={idx}
-                                whileHover={{ scale: 1.3, color: '#3E7136', rotate: 10 }}
-                                className="text-sm outline-none"
-                            >
-                                <FontAwesomeIcon icon={icon} />
-                            </motion.button>
-                        ))}
-                    </div>
+                </div>
+
+                {/* Center: Contact Info */}
+                <div className="hidden sm:flex items-center gap-2 font-bold tracking-widest uppercase bg-white/10 px-4 py-1 rounded-full backdrop-blur-sm border border-white/5 mx-4">
+                    <FontAwesomeIcon icon={faPhoneVolume} className="text-[10px] animate-pulse" />
+                    <span>Llámanos ahora</span>
+                    <a href="tel:+573217864103" className="hover:text-brand-charcoal transition-colors ml-1">+57 321 786 4103</a>
+                </div>
+
+                {/* Right: Shop Link */}
+                <div className="flex items-center gap-2 font-bold tracking-widest uppercase">
+                    <FontAwesomeIcon icon={faShoppingCart} className="text-[10px]" />
+                    <Link to="/catalog" className="underline hover:text-white/80 transition-colors">Comprar ahora</Link>
                 </div>
             </div>
 
@@ -95,17 +96,39 @@ const Navbar = () => {
                         LOGO<span className="text-brand-green italic group-hover:scale-105 transition-transform">Energy</span>
                     </Link>
                 </div>
+                {/* Desktop Menu */}
+                <nav className="hidden lg:flex flex-1 justify-center items-center gap-8">
+                    {navItems.map((item, idx) => (
+                        <Link
+                            key={`${item.path}-${idx}`}
+                            to={item.path}
+                            className={`text-[11px] font-bold uppercase tracking-widest text-brand-charcoal dark:text-brand-cream hover:text-brand-green transition-all duration-300 relative group flex items-center gap-2 ${
+                                location.pathname === item.path ? 'text-brand-green' : ''
+                            }`}
+                        >
+                            <motion.div 
+                                className="flex items-center gap-2"
+                                whileHover="hover"
+                            >
+                                <motion.span
+                                    variants={{
+                                        hover: { scale: 1.3, rotate: 10, color: '#D31A20' }
+                                    }}
+                                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                                >
+                                    <FontAwesomeIcon icon={item.icon} className="text-[14px]" />
+                                </motion.span>
+                                {item.label}
+                            </motion.div>
+                            <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-green transition-all duration-300 group-hover:w-full ${
+                                location.pathname === item.path ? 'w-full' : ''
+                            }`}></span>
+                        </Link>
+                    ))}
+                </nav>
 
                 {/* Contact & Icons */}
-                <div className="flex flex-1 justify-end items-center gap-6 lg:gap-10">
-                    <div className="hidden lg:flex items-center gap-3">
-                        <FontAwesomeIcon icon={faPhoneVolume} className="text-3xl text-brand-charcoal dark:text-white" />
-                        <div className="flex flex-col">
-                            <span className="text-[10px] text-brand-charcoal/50 dark:text-white/50 font-bold uppercase tracking-widest leading-none mb-1">Llámanos Ahora</span>
-                            <span className="font-black text-brand-charcoal dark:text-white text-lg leading-none">+123 5678 890</span>
-                        </div>
-                    </div>
-
+                <div className="flex lg:flex-none justify-end items-center gap-6 lg:gap-10">
                     <div className="flex items-center gap-6 text-brand-charcoal dark:text-white">
                         {/* Theme Toggle */}
                         <motion.button 
@@ -149,7 +172,7 @@ const Navbar = () => {
                         >
                             <div className="relative">
                                 <FontAwesomeIcon icon={faShoppingCart} className="text-xl" />
-                                <span className="absolute -top-2 -right-2 bg-brand-green text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-md">
+                                <span className="absolute -top-2 -right-2 bg-[#D31A20] text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-md">
                                     {itemCount}
                                 </span>
                             </div>
@@ -161,7 +184,7 @@ const Navbar = () => {
                             animate={{ color: currentIconColor }}
                             whileHover={{ scale: 1.1, x: 5, color: '#3E7136' }}
                             whileTap={{ scale: 0.9 }}
-                            className="text-2xl ml-2 outline-none"
+                            className="text-2xl ml-2 outline-none lg:hidden"
                         >
                             <FontAwesomeIcon icon={faBars} />
                         </motion.button>
@@ -235,15 +258,30 @@ const Navbar = () => {
                                     key={`${item.path}-${idx}`}
                                     to={item.path}
                                     onClick={() => setIsMenuOpen(false)}
-                                    className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center justify-between group transition-all"
+                                    className="px-6 py-4 border-b border-gray-50 dark:border-white/5 text-sm font-bold uppercase text-brand-charcoal dark:text-brand-cream hover:text-brand-green flex items-center group transition-all"
                                 >
-                                    <motion.span 
-                                        whileHover={{ x: 10 }}
-                                        transition={{ type: 'spring', stiffness: 300 }}
+                                    <motion.div 
+                                        className="flex items-center gap-4 w-full"
+                                        whileHover="hover"
                                     >
-                                        {item.label}
-                                    </motion.span>
-                                    <FontAwesomeIcon icon={faBars} className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px]" />
+                                        <motion.span
+                                            variants={{
+                                                hover: { scale: 1.2, rotate: 5, color: '#D31A20' }
+                                            }}
+                                            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                                            className="text-lg w-6 text-brand-green/70 flex items-center justify-center"
+                                        >
+                                            <FontAwesomeIcon icon={item.icon} />
+                                        </motion.span>
+                                        <motion.span 
+                                            variants={{ hover: { x: 10 } }}
+                                            transition={{ type: 'spring', stiffness: 300 }}
+                                            className="flex-1"
+                                        >
+                                            {item.label}
+                                        </motion.span>
+                                        <FontAwesomeIcon icon={faBars} className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px]" />
+                                    </motion.div>
                                 </Link>
                             ))}
                         </div>
